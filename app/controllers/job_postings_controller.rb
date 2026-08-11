@@ -7,6 +7,7 @@ class JobPostingsController < ApplicationController
   permission :edit, desc: "Access the edit job posting form", auto_assign: ["Staff", "Manager", "Super Admin"]
   permission :update, desc: "Edit job postings", auto_assign: ["Staff", "Manager", "Super Admin"]
   permission :destroy, desc: "Delete job postings", key: "forms.delete", auto_assign: ["Super Admin"]
+  permission :update_status, desc: "Change job posting status (publish/close/reopen)", auto_assign: ["Staff", "Manager", "Super Admin"]
 
   def index
     @job_postings = JobPosting.all
@@ -33,12 +34,32 @@ class JobPostingsController < ApplicationController
   end
 
   def edit
+    @job_posting = JobPosting.find(params[:id])
   end
 
   def update
+    @job_posting = JobPosting.find(params[:id])
+
+    if @job_posting.update(job_posting_params)
+      redirect_to @job_posting, notice: "Job posting updated successfully."
+    else
+      render turbo_stream: turbo_stream.replace("job_posting_dialog_form",
+        partial: "job_postings/form", locals: { job_posting: @job_posting }),
+        status: :unprocessable_entity
+    end
   end
 
   def destroy
+  end
+
+  def update_status
+    @job_posting = JobPosting.find(params[:id])
+    @job_posting.update!(status: params[:status])
+    redirect_to @job_posting, notice: "Job posting status updated."
+  end
+
+  def new_button
+    render "sections/new_button", layout: false
   end
 
   private

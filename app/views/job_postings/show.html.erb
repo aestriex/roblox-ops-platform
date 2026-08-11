@@ -1,23 +1,66 @@
-<div class="max-w-3xl mx-auto px-6 py-12">
-  <h1 class="text-3xl font-bold text-foreground mb-2">
-    <%= @job_posting.title %>
-  </h1>
-  <p class="text-muted-foreground mb-6">
-    <%= @job_posting.department %>
-  </p>
-  <p class="text-foreground leading-relaxed mb-6">
-    <%= @job_posting.description %>
-  </p>
+<div class="grid grid-cols-3 gap-8">
+    <div class="col-span-1 space-y-6 sticky top-8 self-start z-10">
+    <div class="p-4 rounded-lg space-y-3">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-foreground"><%= @job_posting.title %></h1>
+        <span class="px-2 py-1 rounded-full text-xs font-medium <%= @job_posting.status_badge_classes %>">
+          <%= @job_posting.status.titleize %>
+        </span>
+      </div>
+      <p class="text-sm text-muted-foreground"><%= @job_posting.department %></p>
+      <p class="text-sm text-foreground"><%= @job_posting.description %></p>
+    </div>
 
-  <%= turbo_frame_tag "new_section" do %>
-    <%= render_button as: :link, href: new_job_posting_section_path(@job_posting), variant: :outline do %>
-      <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Section
-    <% end %>
-  <% end %>
+    <div class="flex flex-row gap-2">
+      <div class="flex-1">
+        <% if @job_posting.status == "draft" %>
+          <%= button_to "Publish", update_status_job_posting_path(@job_posting, status: "open"), method: :patch, class: "w-full text-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-medium" %>
+        <% elsif @job_posting.status == "open" %>
+          <%= button_to "Close Posting", update_status_job_posting_path(@job_posting, status: "closed"), method: :patch, class: "w-full text-center px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+        <% else %>
+          <%= button_to "Reopen", update_status_job_posting_path(@job_posting, status: "open"), method: :patch, class: "w-full text-center px-4 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 text-sm font-medium" %>
+        <% end %>
+      </div>
+      <div class="flex-1">
+        <%= render_dialog do %>
+          <%= dialog_trigger do %>
+            <%= render_button variant: :outline, class: "w-full" do %>
+              <%= lucide_icon "pencil", class: "w-4 h-4 mr-2" %> Edit Details
+            <% end %>
+          <% end %>
 
-  <div id="sections" data-controller="sortable" data-sortable-url-value="<%= reorder_job_posting_sections_path(@job_posting) %>">
-    <% @job_posting.sections.order(:position).each do |section| %>
-      <%= render "sections/section", section: section, job_posting: @job_posting %>
+          <%= dialog_content do %>
+            <h2 class="text-lg font-semibold text-foreground mb-6">Edit Job Posting</h2>
+            <%= turbo_frame_tag "job_posting_dialog_form" do %>
+              <%= render "job_postings/form", job_posting: @job_posting %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="p-4 border border-border rounded-lg space-y-2">
+      <p class="text-sm font-medium text-foreground">Sharing URL</p>
+      <div class="flex items-center gap-2" data-controller="clipboard">
+        <input data-clipboard-target="source" type="text" readonly
+               value="<%= "#{request.base_url}/apply/#{@job_posting.slug}" %>"
+               class="flex-1 text-xs border border-input rounded-md px-2 py-1.5 bg-muted text-muted-foreground" />
+        <%= render_button variant: :ghost, data: { action: "clipboard#copy" } do %>
+          <%= lucide_icon "copy", class: "w-4 h-4" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-span-2 relative space-y-4">
+    <div id="sections" data-controller="sortable" data-sortable-url-value="<%= reorder_job_posting_sections_path(@job_posting) %>">
+      <% @job_posting.sections.order(:position).each do |section| %>
+        <%= render "sections/section", section: section, job_posting: @job_posting %>
+      <% end %>
+    </div>
+
+    <%= turbo_frame_tag "new_section", data: { controller: "dismissible-frame" } do %>
+      <%= render "sections/add_section_button", job_posting: @job_posting %>
     <% end %>
   </div>
 </div>

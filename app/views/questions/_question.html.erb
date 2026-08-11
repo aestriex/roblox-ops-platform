@@ -1,5 +1,5 @@
-<%= turbo_frame_tag dom_id(question) do %>
-  <div id="<%= dom_id(question) %>" data-id="<%= question.id %>" class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3">
+<%= turbo_frame_tag dom_id(question), data: { id: question.id } do %>
+  <div id="<%= dom_id(question) %>" class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3">
     <%= lucide_icon "grip-vertical", class: "w-4 h-4 text-muted-foreground cursor-grab drag-handle mt-1" %>
 
     <div class="flex-1">
@@ -50,7 +50,7 @@
       <% end %>
     </div>
 
-    <%= render_button as: :link, href: edit_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost do %>
+    <%= render_button as: :link, href: edit_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost, draggable: false do %>
       <%= lucide_icon "pencil", class: "w-4 h-4" %>
     <% end %>
   </div>

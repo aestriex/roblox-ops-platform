@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_31_073903) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_10_213911) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -19,9 +19,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_31_073903) do
     t.datetime "created_at", null: false
     t.string "department"
     t.text "description"
+    t.string "slug"
     t.string "status"
     t.string "title"
     t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_job_postings_on_slug", unique: true
   end
 
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

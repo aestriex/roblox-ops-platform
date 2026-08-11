@@ -1,4 +1,4 @@
-<%= form_with model: job_posting, url: job_postings_path, class: "space-y-4" do |form| %>
+<%= form_with model: job_posting, url: job_posting.persisted? ? job_posting_path(job_posting) : job_postings_path, class: "space-y-4" do |form| %>
   <% if job_posting.errors.any? %>
     <div class="text-sm text-destructive space-y-1">
       <% job_posting.errors.full_messages.each do |msg| %>
@@ -12,6 +12,7 @@
       <%= form.label :title, class: "block font-medium text-foreground mb-1" %>
       <span class="text-xs text-destructive">*</span>
     </div>
+
     <%= form.text_field :title, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
   </div>
 
@@ -20,6 +21,7 @@
       <%= form.label :department, class: "block font-medium text-foreground mb-1" %>
       <span class="text-xs text-destructive">*</span>
     </div>
+
     <%= form.text_field :department, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
   </div>
 
@@ -28,6 +30,7 @@
       <%= form.label :description, class: "block font-medium text-foreground mb-1" %>
       <span class="text-xs text-destructive">*</span>
     </div>
+
     <%= form.text_area :description, rows: 3, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
   </div>
 
@@ -36,5 +39,5 @@
     <%= form.select :status, %w[draft], {}, class: "w-full border border-input rounded-md px-4 py-2 bg-background hidden" %>
   </div>
 
-  <%= render_button "Create Posting", type: :submit %>
+  <%= render_button job_posting.persisted? ? "Save Changes" : "Create Posting", type: :submit %>
 <% end %>

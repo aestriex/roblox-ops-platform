@@ -3,10 +3,8 @@
 <% end %>
 
 <%= turbo_stream.replace "new_section" do %>
-  <%= turbo_frame_tag "new_section" do %>
-    <%= render_button as: :link, href: new_job_posting_section_path(@job_posting), variant: :outline do %>
-      <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Section
-    <% end %>
+  <%= turbo_frame_tag "new_section", data: { controller: "dismissible-frame" } do %>
+    <%= render "sections/add_section_button", job_posting: @job_posting %>
   <% end %>
 <% end %>
 

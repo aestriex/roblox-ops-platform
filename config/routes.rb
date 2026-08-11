@@ -2,8 +2,10 @@ Rails.application.routes.draw do
   get "pages/dashboard"
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   resources :job_postings do
+    patch :update_status, on: :member
     resources :sections do
       patch :reorder, on: :collection
+      get :new_button, on: :collection
       resources :questions do
         patch :reorder, on: :collection
       end
