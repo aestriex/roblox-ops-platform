@@ -2,6 +2,8 @@ class Question < ApplicationRecord
   QUESTION_TYPES = %w[short_text long_text email link file_upload checkbox radio dropdown].freeze
   OPTION_TYPES = %w[checkbox radio dropdown].freeze
 
+  has_many :answers, dependent: :destroy
+
   belongs_to :section
 
   validates :label, presence: true

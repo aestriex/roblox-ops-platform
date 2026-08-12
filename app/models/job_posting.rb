@@ -1,6 +1,8 @@
 class JobPosting < ApplicationRecord
   has_many :sections, dependent: :destroy
   has_many :questions, through: :sections
+  has_many :posting_applications, dependent: :destroy
+  has_many :answers, through: :posting_applications
 
   validates :title, presence: true
   validates :department, presence: true
