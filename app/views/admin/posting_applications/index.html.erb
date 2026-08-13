@@ -1,0 +1,46 @@
+<div class="max-w-5xl mx-auto space-y-8">
+  <div>
+    <h1 class="text-3xl font-bold text-foreground">Submissions</h1>
+    <p class="text-sm text-muted-foreground"><%= @job_posting.title %></p>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="p-6 border border-border rounded-lg text-center">
+      <p class="text-3xl font-bold text-foreground"><%= @posting_applications.where(status: "submitted").count %></p>
+      <p class="text-sm text-muted-foreground">Submitted</p>
+    </div>
+    <div class="p-6 border border-border rounded-lg text-center">
+      <p class="text-3xl font-bold text-foreground"><%= @posting_applications.where(status: "in_progress").count %></p>
+      <p class="text-sm text-muted-foreground">In Progress</p>
+    </div>
+  </div>
+
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Applicant" %>
+      <%= table_header "Status" %>
+      <%= table_header "Submitted" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% @posting_applications.each do |application| %>
+        <%= table_row class: "relative" do %>
+          <%= table_column do %>
+            <div class="flex items-center gap-2">
+              <%= image_tag application.user.display_avatar_url, class: "w-6 h-6 rounded-full" %>
+              <%= link_to application.user.display_name, job_posting_posting_application_path(@job_posting, application), class: "after:absolute after:inset-0" %>
+            </div>
+          <% end %>
+          <%= table_column do %>
+            <% if application.status == "submitted" %>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-green-500/10 text-green-600">Submitted</span>
+            <% else %>
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">In Progress</span>
+            <% end %>
+          <% end %>
+          <%= table_column application.submitted_at&.strftime("%b %-d, %Y") || "—" %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

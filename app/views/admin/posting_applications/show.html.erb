@@ -1,0 +1,55 @@
+<div class="max-w-3xl mx-auto space-y-8">
+  <div class="flex items-center gap-3">
+    <%= image_tag @posting_application.user.display_avatar_url, class: "w-10 h-10 rounded-full" %>
+
+    <div>
+      <h1 class="text-xl font-bold text-foreground">
+        <%= @posting_application.user.display_name %>
+      </h1>
+
+      <p class="text-sm text-muted-foreground">
+        Applied to <%= @job_posting.title %>
+        <% if @posting_application.submitted_at %>
+          on <%= @posting_application.submitted_at.strftime("%B %-d, %Y") %>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <% @job_posting.sections.order(:position).each do |section| %>
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-foreground border-b border-border pb-2">
+        <%= section.title %>
+      </h2>
+
+      <% section.questions.order(:position).each do |question| %>
+        <% answer = @posting_application.answers.find_by(question: question) %>
+
+        <div>
+          <p class="text-sm font-medium text-foreground mb-1">
+            <%= question.label %>
+          </p>
+
+          <% if answer.nil? || (answer.value.blank? && !answer.file.attached?) %>
+            <p class="text-sm text-muted-foreground italic">
+              No answer provided
+            </p>
+          <% elsif answer.file.attached? %>
+            <%= link_to rails_blob_path(answer.file, disposition: "attachment"), class: "inline-flex items-center gap-2 px-3 py-2 border border-border rounded-md text-sm text-foreground hover:bg-accent w-fit" do %>
+              <%= lucide_icon "paperclip", class: "w-4 h-4 text-muted-foreground" %>
+              <%= answer.file.filename %>
+
+              <span class="text-xs text-muted-foreground">(<%= number_to_human_size(answer.file.byte_size) %>)</span>
+            <% end %>
+          <% elsif answer.value.is_a?(Array) %>
+            <p class="text-sm text-foreground">
+              <%= answer.value.join(", ") %>
+            </p>
+          <% else %>
+            <p class="text-sm text-foreground whitespace-pre-line"><%= answer.value %></p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</div>
