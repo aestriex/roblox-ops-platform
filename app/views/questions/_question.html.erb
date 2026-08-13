@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(question), data: { id: question.id } do %>
   <div
     id="<%= dom_id(question) %>"
-    class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3"
+    class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3 group"
   >
     <%= lucide_icon "grip-vertical", class: "w-4 h-4 text-muted-foreground cursor-grab drag-handle mt-1" %>
 
@@ -72,8 +72,31 @@
       <% end %>
     </div>
 
-    <%= render_button as: :link, href: edit_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost, draggable: false do %>
+    <%= render_button as: :link, href: edit_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost, draggable: false, class: "opacity-0 group-hover:opacity-100 transition-all duration-100" do %>
       <%= lucide_icon "pencil", class: "w-4 h-4" %>
+    <% end %>
+
+    <%= render_alert_dialog do %>
+      <% alert_dialog_trigger do %>
+          <%= render_button variant: :ghost, draggable: false, class: "opacity-0 group-hover:opacity-100 transition-all duration-100" do %>
+            <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+          <% end %>
+      <% end %>
+
+      <% alert_dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-2">
+          Delete this question?
+        </h2>
+
+        <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+      <% end %>
+
+      <% alert_dialog_cancel do %>
+        <%= render_button "Cancel", variant: :outline %>
+      <% end %>
+
+      <% alert_dialog_continue do %>
+          <%= button_to "Delete", job_posting_section_question_path(question.section.job_posting, question.section, question), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>      <% end %>
     <% end %>
   </div>
 <% end %>

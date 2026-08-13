@@ -35,7 +35,7 @@
 
   <div>
     <%= form.label :status, class: "block font-medium text-foreground mb-1 hidden" %>
-    <%= form.select :status, %w[draft], {}, class: "w-full border border-input rounded-md px-4 py-2 bg-background hidden" %>
+    <%= form.select :status, job_posting.persisted? ? job_posting.status : %w[draft], {}, class: "w-full border border-input rounded-md px-4 py-2 bg-background hidden" %>
   </div>
 
   <%= render_button job_posting.persisted? ? "Save Changes" : "Create Posting", type: :submit %>

@@ -7,19 +7,24 @@
 
     <div>
       <%= form.label :question_type, "Question Type", class: "block font-medium text-foreground mb-1" %>
+
       <%= form.select :question_type, Question::QUESTION_TYPES, {}, {
             class: "w-full border border-input rounded-md px-4 py-2 bg-background focus:ring-2 focus:outline-none focus:ring-accent duration-100",
             data: { action: "change->toggle-visibility#check", "toggle-visibility-target": "select" }
           } %>
     </div>
 
-    <div data-toggle-visibility-target="optionsPanel" class="<%= "hidden" unless @question.has_options? %>">
+    <div
+      data-toggle-visibility-target="optionsPanel"
+      class="<%= "hidden" unless @question.has_options? %>"
+    >
       <%= form.label :options, "Options (one per line)", class: "block font-medium text-foreground mb-1" %>
       <%= form.text_area :options, rows: 4, class: "w-full border border-input rounded-md px-4 py-2 bg-background focus:ring-2 focus:outline-none focus:ring-accent duration-100" %>
     </div>
 
     <div class="flex items-center gap-2">
-      <%= render_checkbox(label: "Required", name: "question[required]", checked: @question.required) %>
+      <%= hidden_field_tag "question[required]", "0", id: nil %>
+      <%= render_checkbox(label: "Required", name: "question[required]", value: "1", checked: @question.required) %>
     </div>
 
     <div class="flex items-center gap-2">

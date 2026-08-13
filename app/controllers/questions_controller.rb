@@ -1,6 +1,6 @@
 class QuestionsController < ApplicationController
   layout "admin"
-  
+
   before_action :authenticate_user!
   before_action :set_job_posting
   before_action :set_section
@@ -34,7 +34,7 @@ class QuestionsController < ApplicationController
 
   def update
     @question = @section.questions.find(params[:id])
-    
+
     if @question.update(question_params)
       respond_to do |format|
         format.turbo_stream

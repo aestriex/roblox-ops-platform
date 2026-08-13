@@ -7,8 +7,8 @@
   <div class="space-y-2 mb-3">
     <% @role.permissions.each do |permission| %>
       <div class="p-3 border border-border rounded-md">
-        <p class="font-medium text-sm"><%= permission.key %></p>
-        <p class="text-xs text-muted-foreground"><%= permission.description %></p>
+        <p class="font-medium text-sm"><%= permission.description %></p>
+        <p class="text-xs text-muted-foreground"><%= permission.key %></p>
       </div>
     <% end %>
   </div>
@@ -18,7 +18,7 @@
   </div>
 <% end %>
 
-<%= render_button as: :link, href: edit_role_path(@role) do %>
+<%= render_button as: :link, variant: :outline, href: edit_role_path(@role) do %>
   <%= lucide_icon "pencil", class: "w-4 h-4 mr-2" %>
   Edit Permissions
 <% end %>
