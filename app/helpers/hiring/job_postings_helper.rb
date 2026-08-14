@@ -1,0 +1,2 @@
+module Hiring::JobPostingsHelper
+end

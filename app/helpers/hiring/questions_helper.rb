@@ -1,0 +1,2 @@
+module Hiring::QuestionsHelper
+end

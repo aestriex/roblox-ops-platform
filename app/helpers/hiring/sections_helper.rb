@@ -1,0 +1,2 @@
+module Hiring::SectionsHelper
+end

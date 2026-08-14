@@ -30,17 +30,17 @@
             Dashboard
         <% end %>
 
-        <%= link_to job_postings_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
+        <%= link_to hiring_job_postings_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
           <%= lucide_icon "briefcase" , class: "w-4 h-4" %>
             Job Postings
         <% end %>
 
-        <%= link_to roles_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
+        <%= link_to admin_roles_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
           <%= lucide_icon "key" , class: "w-4 h-4" %>
             Role Management
         <% end %>
 
-        <%= link_to users_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
+        <%= link_to admin_users_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
           <%= lucide_icon "user" , class: "w-4 h-4" %>
             User Management
         <% end %>

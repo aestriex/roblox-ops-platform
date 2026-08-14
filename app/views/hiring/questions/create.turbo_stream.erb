@@ -1,0 +1,15 @@
+<%= turbo_stream.append dom_id(@section, :questions) do %>
+  <%= render "hiring/questions/question", question: @question %>
+<% end %>
+
+<%= turbo_stream.replace dom_id(@section, :new_question) do %>
+  <%= turbo_frame_tag dom_id(@section, :new_question) do %>
+    <%= render_button as: :link, href: new_hiring_job_posting_section_question_path(@job_posting, @section), variant: :secondary do %>
+      <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Question
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.append "toast-container" do %>
+  <%= render "shared/toast", type: "notice", message: flash.now[:notice] %>
+<% end %>

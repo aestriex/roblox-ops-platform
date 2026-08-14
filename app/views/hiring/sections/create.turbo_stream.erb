@@ -1,0 +1,13 @@
+<%= turbo_stream.append "sections" do %>
+  <%= render "hiring/sections/section", section: @section, job_posting: @job_posting %>
+<% end %>
+
+<%= turbo_stream.replace "new_section" do %>
+  <%= turbo_frame_tag "new_section", data: { controller: "dismissible-frame" } do %>
+    <%= render "hiring/sections/add_section_button", job_posting: @job_posting %>
+  <% end %>
+<% end %>
+
+<%= turbo_stream.append "toast-container" do %>
+  <%= render "shared/toast", type: "notice", message: flash.now[:notice] %>
+<% end %>

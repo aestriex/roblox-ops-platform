@@ -1,20 +1,22 @@
 Rails.application.routes.draw do
   get "pages/dashboard"
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
-  resources :job_postings do
-    patch :update_status, on: :member
-    resources :sections do
-      patch :reorder, on: :collection
-      get :new_button, on: :collection
-      resources :questions do
+  namespace :hiring do
+    resources :job_postings do
+      patch :update_status, on: :member
+      resources :sections do
         patch :reorder, on: :collection
+        get :new_button, on: :collection
+        resources :questions do
+          patch :reorder, on: :collection
+        end
       end
+      resources :posting_applications, only: [:index, :show]
     end
-    resources :posting_applications, only: [:index, :show], module: "admin"
   end
 
-  resources :roles, only: [:index, :show, :edit, :update]
-  resources :users, only: [:index, :edit, :update]
+  namespace :admin do resources :roles, only: [:index, :show, :edit, :update] end
+  namespace :admin do resources :users, only: [:index, :edit, :update] end
 
   root "pages#dashboard"
 
