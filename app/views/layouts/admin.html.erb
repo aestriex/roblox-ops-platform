@@ -21,7 +21,7 @@
   <div class="flex h-screen">
     <aside class="w-64 border-r border-border bg-muted/40 flex flex-col">
       <div class="h-(--spacing-header) flex items-center px-4 border-b border-border">
-        <span class="font-semibold text-lg">Studio Provisio</span>
+        <span class="font-semibold text-lg">Studio Proviso</span>
       </div>
 
       <nav class="flex-1 p-4 space-y-1">
@@ -29,7 +29,7 @@
           <%= lucide_icon "layout-dashboard" , class: "w-4 h-4" %>
             Dashboard
         <% end %>
-        
+
         <%= link_to job_postings_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
           <%= lucide_icon "briefcase" , class: "w-4 h-4" %>
             Job Postings
@@ -56,7 +56,7 @@
           <button data-action="click->dropdown#toggle" class="p-1 rounded-md hover:bg-accent">
             <%= lucide_icon "more-vertical", class: "w-5 h-5" %>
           </button>
-        
+
           <div data-dropdown-target="menu"
             class="hidden absolute bottom-full mb-2 left-0 w-48 bg-popover border border-border rounded-md shadow-md p-1 bg-background">
             <button data-action="click->theme#toggle"
@@ -76,7 +76,7 @@
 
     <div class="flex-1 flex flex-col overflow-hidden">
       <%= render "shared/breadcrumbs" , breadcrumbs: auto_breadcrumbs %>
-    
+
       <main class="flex-1 overflow-y-auto p-8">
         <%= render "shared/toasts" %>
         <%= yield %>

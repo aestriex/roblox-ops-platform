@@ -2,12 +2,15 @@ module Public
   class PostingApplicationsController < ApplicationController
     layout "public_application"
 
-    before_action :authenticate_user!
-    before_action :set_job_posting
-    before_action :ensure_open!, except: [:complete]
-    before_action :ensure_editable!, only: [:show, :update]
-    before_action :set_section
+    before_action :authenticate_user!, except: [:index]
+    before_action :set_job_posting, except: [:index]
+    before_action :ensure_open!, except: [:complete, :index]
+    before_action :ensure_editable!, only: [:show, :update], except: [:index]
+    before_action :set_section, except: [:index]
 
+    def index
+      @postings = JobPosting.where(status: "open")
+    end
 
     def show
       head :not_found and return unless @section

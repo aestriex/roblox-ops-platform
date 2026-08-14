@@ -39,9 +39,35 @@
             <%= posting.status.titleize %>
           </span>
         <% end %>
-        <%= table_column class: "text-right relative z-10" do %>
-          <%= render_button as: :link, href: edit_job_posting_path(posting), variant: :ghost do %>
-            <%= lucide_icon "pencil", class: "w-4 h-4" %>
+        <%= table_column do %>
+          <div class="flex justify-end gap-1">
+            <%= render_button as: :link, href: edit_job_posting_path(posting), variant: :ghost, class: "relative z-10" do %>
+                <%= lucide_icon "pencil", class: "w-4 h-4" %>
+            <% end %>
+
+            <%= render_alert_dialog do %>
+                <% alert_dialog_trigger do %>
+                <%= render_button variant: :ghost do %>
+                    <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+                <% end %>
+                <% end %>
+
+                <% alert_dialog_content do %>
+                <h2 class="text-lg font-semibold text-foreground mb-2">
+                    Delete this job posting?
+                </h2>
+
+                <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+                <% end %>
+
+                <% alert_dialog_cancel do %>
+                <%= render_button "Cancel", variant: :outline %>
+                <% end %>
+
+                <% alert_dialog_continue do %>
+                <%= button_to "Delete", job_posting_path(posting), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium z-500" %>
+            <% end %>
+          </div>
           <% end %>
         <% end %>
       <% end %>

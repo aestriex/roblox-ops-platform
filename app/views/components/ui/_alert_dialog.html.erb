@@ -1,5 +1,5 @@
 <div data-controller="ui--dialog">
-  <div data-action="click->ui--dialog#open"><%= content_for(:alert_dialog_trigger) %></div>
+  <div class="relative z-10" data-action="click->ui--dialog#open"><%= content_for(:alert_dialog_trigger) %></div>
   <%= render "components/ui/shared/backdrop", as: "backdrop" %>
 
   <div

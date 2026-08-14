@@ -1,0 +1,23 @@
+<div class="space-y-8">
+  <div class="space-y-2">
+    <h1 class="text-3xl font-bold text-foreground">Open Positions</h1>
+    <p class="text-sm text-muted-foreground">Join Studio Proviso — explore our current openings below.</p>
+  </div>
+
+  <% if @postings.empty? %>
+    <div class="text-center py-24 text-muted-foreground">
+      <%= lucide_icon "inbox", class: "w-8 h-8 mx-auto mb-3" %>
+      <p>There are no open positions right now. Please check back soon!</p>
+    </div>
+  <% else %>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <% @postings.each do |posting| %>
+        <%= link_to apply_path(slug: posting.slug), class: "block p-6 border border-border rounded-lg hover:border-primary/25 transition-colors duration-150" do %>
+          <h2 class="text-lg font-semibold text-foreground mb-1"><%= posting.title %></h2>
+          <p class="text-sm text-muted-foreground mb-3"><%= posting.department %></p>
+          <p class="text-sm text-foreground line-clamp-3"><%= posting.description %></p>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

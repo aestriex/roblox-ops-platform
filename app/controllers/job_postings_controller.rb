@@ -50,6 +50,9 @@ class JobPostingsController < ApplicationController
   end
 
   def destroy
+    @job_posting = JobPosting.find(params[:id])
+    @job_posting.destroy
+    redirect_to job_postings_path, notice: "Job posting deleted."
   end
 
   def update_status
