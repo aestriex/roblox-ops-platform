@@ -24,27 +24,25 @@
         <span class="font-semibold text-lg">Studio Proviso</span>
       </div>
 
-      <nav class="flex-1 p-4 space-y-1">
-        <%= link_to root_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
-          <%= lucide_icon "layout-dashboard" , class: "w-4 h-4" %>
-            Dashboard
-        <% end %>
+      <nav class="flex-1 p-4 space-y-4">
+        <% visible_nav_sections.each do |group| %>
+          <div>
+            <% if group[:section] %>
+              <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
+                <%= group[:section] %>
+              </p>
+            <% end %>
 
-        <%= link_to hiring_job_postings_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
-          <%= lucide_icon "briefcase" , class: "w-4 h-4" %>
-            Job Postings
-        <% end %>
-
-        <%= link_to admin_roles_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
-          <%= lucide_icon "key" , class: "w-4 h-4" %>
-            Role Management
-        <% end %>
-
-        <%= link_to admin_users_path, class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
-          <%= lucide_icon "user" , class: "w-4 h-4" %>
-            User Management
+            <% group[:items].each do |item| %>
+              <%= link_to send(item[:path]), class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
+                <%= lucide_icon item[:icon], class: "w-4 h-4" %>
+                <%= item[:label] %>
+              <% end %>
+            <% end %>
+          </div>
         <% end %>
       </nav>
+
       <div class="p-4 border-t border-border text-sm flex flex-row justify-between items-center">
         <div class="flex items-center gap-2">
           <%= image_tag current_user.display_avatar_url, class: "w-8 h-8 rounded-full" %>

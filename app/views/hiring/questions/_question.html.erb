@@ -1,7 +1,7 @@
 <%= turbo_frame_tag dom_id(question), data: { id: question.id } do %>
   <div
     id="<%= dom_id(question) %>"
-    class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3 group"
+    class="mb-3 p-4 bg-muted rounded-lg flex items-start gap-3 group/question"
   >
     <%= lucide_icon "grip-vertical", class: "w-4 h-4 text-muted-foreground cursor-grab drag-handle mt-1" %>
 
@@ -72,13 +72,13 @@
       <% end %>
     </div>
 
-    <%= render_button as: :link, href: edit_hiring_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost, draggable: false, class: "opacity-0 group-hover:opacity-100 transition-all duration-100" do %>
+    <%= render_button as: :link, href: edit_hiring_job_posting_section_question_path(question.section.job_posting, question.section, question), variant: :ghost, draggable: false, class: "opacity-0 group-hover/question:opacity-100 transition-all duration-100" do %>
       <%= lucide_icon "pencil", class: "w-4 h-4" %>
     <% end %>
 
     <%= render_alert_dialog do %>
       <% alert_dialog_trigger do %>
-          <%= render_button variant: :ghost, draggable: false, class: "opacity-0 group-hover:opacity-100 transition-all duration-100" do %>
+          <%= render_button variant: :ghost, draggable: false, class: "opacity-0 group-hover/question:opacity-100 transition-all duration-100" do %>
             <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
           <% end %>
       <% end %>

@@ -1,20 +1,43 @@
 <div class="max-w-3xl mx-auto space-y-8">
-  <div class="flex items-center gap-3">
-    <%= image_tag @posting_application.user.display_avatar_url, class: "w-10 h-10 rounded-full" %>
-
     <div>
-      <h1 class="text-xl font-bold text-foreground">
-        <%= @posting_application.user.display_name %>
-      </h1>
+        <div class="flex items-center gap-3">
+            <%= image_tag @posting_application.user.display_avatar_url, class: "w-10 h-10 rounded-full" %>
 
-      <p class="text-sm text-muted-foreground">
-        Applied to <%= @job_posting.title %>
-        <% if @posting_application.submitted_at %>
-          on <%= @posting_application.submitted_at.strftime("%B %-d, %Y") %>
+            <div>
+            <h1 class="text-xl font-bold text-foreground">
+                <%= @posting_application.user.display_name %>
+            </h1>
+
+            <p class="text-sm text-muted-foreground">
+                Applied to <%= @job_posting.title %>
+                <% if @posting_application.submitted_at %>
+                on <%= @posting_application.submitted_at.strftime("%B %-d, %Y") %>
+                <% end %>
+            </p>
+            </div>
+        </div>
+
+        <%= render_alert_dialog do %>
+          <% alert_dialog_trigger do %>
+            <%= render_button variant: :ghost, class: "ml-auto transition-all duration-100" do %>
+              <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+            <% end %>
+          <% end %>
+
+          <% alert_dialog_content do %>
+            <h2 class="text-lg font-semibold text-foreground mb-2">Delete this submission?</h2>
+            <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+          <% end %>
+
+          <% alert_dialog_cancel do %>
+            <%= render_button "Cancel", variant: :outline %>
+          <% end %>
+
+          <% alert_dialog_continue do %>
+            <%= button_to "Delete", hiring_job_posting_posting_application_path(@job_posting, @posting_application), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+          <% end %>
         <% end %>
-      </p>
     </div>
-  </div>
 
   <% @job_posting.sections.order(:position).each do |section| %>
     <div class="space-y-4">

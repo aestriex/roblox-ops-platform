@@ -16,6 +16,12 @@ module Hiring
       @posting_application = @job_posting.posting_applications.find(params[:id])
     end
 
+    def destroy
+      @posting_application = @job_posting.posting_applications.find(params[:id])
+      @posting_application.destroy
+      redirect_to hiring_job_posting_path(@job_posting), notice: "Submission deleted."
+    end
+
     private
 
     def set_job_posting

@@ -11,7 +11,7 @@ Rails.application.routes.draw do
           patch :reorder, on: :collection
         end
       end
-      resources :posting_applications, only: [:index, :show]
+      resources :posting_applications, only: [:index, :show, :destroy]
     end
   end
 

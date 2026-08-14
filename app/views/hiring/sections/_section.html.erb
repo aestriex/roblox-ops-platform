@@ -1,22 +1,58 @@
-<div id="<%= dom_id(section) %>" data-id="<%= section.id %>" class="mt-8">
+<div id="<%= dom_id(section) %>" data-id="<%= section.id %>" class="mt-8 group/section" data-controller="collapse">
   <div class="flex items-center gap-2 mb-4">
+    <button type="button" data-action="click->collapse#toggle" class="cursor-pointer">
+      <%= lucide_icon "chevron-down", class: "w-4 h-4 text-muted-foreground transition-transform duration-150", data: { collapse_target: "chevron" } %>
+    </button>
+
     <%= lucide_icon "grip-vertical", class: "w-4 h-4 text-muted-foreground cursor-grab drag-handle" %>
-    <h2 class="text-xl font-semibold text-foreground"><%= section.title %></h2>
-  </div>
 
-  <div id="<%= dom_id(section, :questions) %>"
-     data-controller="sortable"
-     data-sortable-url-value="<%= reorder_hiring_job_posting_section_questions_path(job_posting, section) %>">
-    <% section.questions.order(:position).each do |question| %>
-      <%= render "hiring/questions/question", question: question %>
-    <% end %>
-  </div>
+    <div data-controller="inline-edit" class="flex items-center gap-2">
+      <h2 data-inline-edit-target="display" data-action="click->inline-edit#edit" class="text-xl font-semibold text-foreground cursor-text hover:bg-accent rounded px-1 -mx-1">
+        <%= section.title %>
+      </h2>
 
-  <div class="mt-3">
-    <%= turbo_frame_tag dom_id(section, :new_question) do %>
-        <%= render_button as: :link, href: new_hiring_job_posting_section_question_path(job_posting, section), variant: :secondary, draggable: false do %>
-          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Question
+      <%= form_with model: section, url: hiring_job_posting_section_path(job_posting, section), method: :patch, class: "hidden", data: { inline_edit_target: "form", turbo_frame: "_top" } do |form| %>
+        <%= form.text_field :title, class: "text-xl font-semibold text-foreground bg-background border border-input rounded px-2 py-0.5", data: { inline_edit_target: "input", action: "keydown->inline-edit#submitOnEnter blur->inline-edit#cancel" } %>
+      <% end %>
+    </div>
+
+    <%= render_alert_dialog do %>
+      <% alert_dialog_trigger do %>
+        <%= render_button variant: :ghost, class: "ml-auto opacity-0 group-hover/section:opacity-100 transition-all duration-100" do %>
+          <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
         <% end %>
+      <% end %>
+
+      <% alert_dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-2">Delete this section?</h2>
+        <p class="text-sm text-muted-foreground">This will also delete all questions within it. This action cannot be undone.</p>
+      <% end %>
+
+      <% alert_dialog_cancel do %>
+        <%= render_button "Cancel", variant: :outline %>
+      <% end %>
+
+      <% alert_dialog_continue do %>
+        <%= button_to "Delete", hiring_job_posting_section_path(job_posting, section), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+      <% end %>
     <% end %>
+  </div>
+
+  <div data-collapse-target="content">
+    <div id="<%= dom_id(section, :questions) %>"
+       data-controller="sortable"
+       data-sortable-url-value="<%= reorder_hiring_job_posting_section_questions_path(job_posting, section) %>">
+      <% section.questions.order(:position).each do |question| %>
+        <%= render "hiring/questions/question", question: question %>
+      <% end %>
+    </div>
+
+    <div class="mt-3">
+      <%= turbo_frame_tag dom_id(section, :new_question) do %>
+          <%= render_button as: :link, href: new_hiring_job_posting_section_question_path(job_posting, section), variant: :secondary, draggable: false do %>
+            <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Question
+          <% end %>
+      <% end %>
+    </div>
   </div>
 </div>
