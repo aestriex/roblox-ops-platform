@@ -3,7 +3,7 @@
 
 <head>
   <title>
-    <%= content_for(:title) || "Apply — Studio Proviso" %>
+    <%= content_for(:title) || "Apply — " + Configuration.instance.org_name %>
   </title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <%= csrf_meta_tags %>
@@ -19,7 +19,7 @@
 
 <body class="bg-background text-foreground transition-all duration-300 antialiased" data-controller="theme">
   <header class="h-(--spacing-header) flex items-center px-8 border-b border-border">
-    <span class="text-lg"><span class="font-semibold">Studio Proviso</span> Jobs</span>
+    <span class="text-lg"><span class="font-semibold"><%= Configuration.instance.org_name %></span> Jobs</span>
   </header>
 
   <main class="max-w-5xl mx-auto px-6 py-12">
