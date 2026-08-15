@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_15_073711) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -167,6 +167,68 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_073711) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "workspace_deliverables", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.uuid "feature_id", null: false
+    t.uuid "milestone_id", null: false
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+    t.index ["feature_id"], name: "index_workspace_deliverables_on_feature_id"
+    t.index ["milestone_id"], name: "index_workspace_deliverables_on_milestone_id"
+  end
+
+  create_table "workspace_features", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.uuid "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_workspace_features_on_project_id"
+  end
+
+  create_table "workspace_milestones", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.boolean "locked", default: false, null: false
+    t.string "name", null: false
+    t.uuid "project_id", null: false
+    t.date "target_date"
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_workspace_milestones_on_project_id"
+  end
+
+  create_table "workspace_projects", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "name", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "workspace_submissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "notes"
+    t.uuid "submitted_by_id", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "work_item_id", null: false
+    t.index ["submitted_by_id"], name: "index_workspace_submissions_on_submitted_by_id"
+    t.index ["work_item_id"], name: "index_workspace_submissions_on_work_item_id"
+  end
+
+  create_table "workspace_work_items", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "assignee_id"
+    t.boolean "blocked", default: false, null: false
+    t.text "blocked_reason"
+    t.datetime "created_at", null: false
+    t.uuid "deliverable_id", null: false
+    t.text "description"
+    t.date "due_date"
+    t.string "status", default: "backlog", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assignee_id"], name: "index_workspace_work_items_on_assignee_id"
+    t.index ["deliverable_id"], name: "index_workspace_work_items_on_deliverable_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "posting_applications"
@@ -180,4 +242,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_073711) do
   add_foreign_key "sections", "job_postings"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
+  add_foreign_key "workspace_deliverables", "workspace_features", column: "feature_id"
+  add_foreign_key "workspace_deliverables", "workspace_milestones", column: "milestone_id"
+  add_foreign_key "workspace_features", "workspace_projects", column: "project_id"
+  add_foreign_key "workspace_milestones", "workspace_projects", column: "project_id"
+  add_foreign_key "workspace_submissions", "personnel_people", column: "submitted_by_id"
+  add_foreign_key "workspace_submissions", "workspace_work_items", column: "work_item_id"
+  add_foreign_key "workspace_work_items", "personnel_people", column: "assignee_id"
+  add_foreign_key "workspace_work_items", "workspace_deliverables", column: "deliverable_id"
 end
