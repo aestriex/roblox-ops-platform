@@ -21,7 +21,7 @@
   <div class="flex h-screen">
     <aside class="w-64 border-r border-border bg-muted/40 flex flex-col">
       <div class="h-(--spacing-header) flex items-center px-4 border-b border-border">
-        <span class="font-semibold text-lg">Studio Proviso</span>
+        <span class="font-semibold text-lg"><%= Configuration.instance.org_name %></span>
       </div>
 
       <nav class="flex-1 p-4 space-y-4">
@@ -62,6 +62,12 @@
               <%= lucide_icon "sun-moon", class: "w-4 h-4" %>
               Switch theme
             </button>
+            <% if current_user.can?("admin.configurations.edit") %>
+                <%= link_to edit_admin_configurations_path, class: "w-full flex hover:bg-accent items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
+                  <%= lucide_icon "settings", class: "w-4 h-4" %>
+                  Configuration
+                <% end %>
+            <% end %>
             <%= render_separator class: "mt-1 mb-1" %>
             <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-destructive hover:bg-destructive/10 hover:text-destructive-foreground flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
               <%= lucide_icon "log-out", class: "w-4 h-4" %>

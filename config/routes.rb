@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   get "pages/dashboard"
+
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
+
   namespace :hiring do
     resources :job_postings do
       patch :update_status, on: :member
@@ -15,8 +17,11 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :admin do resources :roles, only: [:index, :show, :edit, :update] end
-  namespace :admin do resources :users, only: [:index, :edit, :update] end
+  namespace :admin do
+    resource :configurations, only: [:edit, :update]
+    resources :roles, only: [:index, :show, :edit, :update]
+    resources :users, only: [:index, :edit, :update]
+  end
 
   root "pages#dashboard"
 
