@@ -1,0 +1,65 @@
+<%= form_with model: person, url: person.persisted? ? personnel_person_path(person) : personnel_people_path, scope: :person, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if person.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% person.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :first_name, class: "block font-medium text-foreground mb-1" %>
+      <%= form.text_field :first_name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+    <div>
+      <%= form.label :last_name, class: "block font-medium text-foreground mb-1" %>
+      <%= form.text_field :last_name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :position, class: "block font-medium text-foreground mb-1" %>
+      <%= form.text_field :position, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+    <div>
+      <%= form.label :department, class: "block font-medium text-foreground mb-1" %>
+      <%= form.text_field :department, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+  </div>
+
+  <div>
+    <%= form.label :status, class: "block font-medium text-foreground mb-1" %>
+    <%= form.select :status, Personnel::Person::STATUSES, {}, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :start_date, class: "block font-medium text-foreground mb-1" %>
+      <%= form.date_field :start_date, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+    <div>
+      <%= form.label :end_date, class: "block font-medium text-foreground mb-1" %>
+      <%= form.date_field :end_date, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+  </div>
+
+  <div>
+    <p class="block font-medium text-foreground mb-1">Linked Roblox Account</p>
+    <%= render_combobox(
+      User.all.map { |u| { value: u.id, name: u.display_name, avatar: u.display_avatar_url, selected: u.id == person.user_id } },
+      name: "person[user_id]",
+      selected_value: person.user_id,
+      selected_label: person.user&.display_name,
+      placeholder: "Link a Roblox account (optional)"
+    ) %>
+  </div>
+
+  <div>
+    <%= form.label :notes, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_area :notes, rows: 3, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <%= render_button person.persisted? ? "Save Changes" : "Create Person", type: :submit %>
+<% end %>

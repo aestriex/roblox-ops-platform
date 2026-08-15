@@ -23,6 +23,10 @@ Rails.application.routes.draw do
     resources :users, only: [:index, :edit, :update]
   end
 
+  namespace :personnel do
+    resources :people
+  end
+
   root "pages#dashboard"
 
   get "up" => "rails/health#show", as: :rails_health_check

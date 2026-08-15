@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_15_054742) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_15_073711) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -76,6 +76,21 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_054742) do
     t.string "description"
     t.string "key"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "personnel_people", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "department"
+    t.date "end_date"
+    t.string "first_name", null: false
+    t.string "last_name", null: false
+    t.text "notes"
+    t.string "position"
+    t.date "start_date"
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.index ["user_id"], name: "index_personnel_people_on_user_id"
   end
 
   create_table "posting_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -156,6 +171,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_054742) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "answers", "posting_applications"
   add_foreign_key "answers", "questions"
+  add_foreign_key "personnel_people", "users"
   add_foreign_key "posting_applications", "job_postings"
   add_foreign_key "posting_applications", "users"
   add_foreign_key "questions", "sections"

@@ -1,0 +1,98 @@
+<div class="mx-auto space-y-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-foreground">Personnel</h1>
+
+    <%= render_dialog do %>
+      <%= dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "user-plus", class: "w-4 h-4 mr-2" %> Add Person
+        <% end %>
+      <% end %>
+
+      <%= dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">Add Person</h2>
+
+        <%= turbo_frame_tag Personnel::Person.new.dialog_form_id do %>
+          <%= render "personnel/people/form", person: Personnel::Person.new %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Name" %>
+      <%= table_header "Position" %>
+      <%= table_header "Department" %>
+      <%= table_header "Status" %>
+      <%= table_header "Linked Account" %>
+      <%= table_header "" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% @people.each do |person| %>
+        <%= table_row do %>
+          <%= table_column person.full_name %>
+          <%= table_column person.position %>
+          <%= table_column person.department %>
+          <%= table_column do %>
+            <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"><%= person.status.titleize %></span>
+          <% end %>
+          <%= table_column do %>
+            <% if person.user %>
+              <div class="flex items-center gap-2">
+                <%= image_tag person.user.display_avatar_url, class: "w-5 h-5 rounded-full" %>
+                <%= person.user.display_name %>
+              </div>
+            <% else %>
+              <span class="text-muted-foreground italic">Unlinked</span>
+            <% end %>
+          <% end %>
+          <%= table_column do %>
+            <div class="flex justify-end gap-1">
+              <%= render_dialog do %>
+                <%= dialog_trigger do %>
+                  <%= render_button variant: :ghost do %>
+                    <%= lucide_icon "pencil", class: "w-4 h-4" %>
+                  <% end %>
+                <% end %>
+
+                <%= dialog_content do %>
+                  <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= person.full_name %></h2>
+
+                  <%= turbo_frame_tag person.dialog_form_id do %>
+                    <%= render "personnel/people/form", person: person %>
+                  <% end %>
+                <% end %>
+              <% end %>
+
+              <%= render_alert_dialog do %>
+                <% alert_dialog_trigger do %>
+                  <%= render_button variant: :ghost do %>
+                    <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+                  <% end %>
+                <% end %>
+
+                <% alert_dialog_content do %>
+                  <h2 class="text-lg font-semibold text-foreground mb-2">
+                    Delete <%= person.full_name %>?
+                  </h2>
+
+                  <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+                <% end %>
+
+                <% alert_dialog_cancel do %>
+                  <%= render_button "Cancel", variant: :outline %>
+                <% end %>
+
+                <% alert_dialog_continue do %>
+                  <%= button_to "Delete", personnel_person_path(person), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium z-500" %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

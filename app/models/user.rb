@@ -3,6 +3,7 @@ class User < ApplicationRecord
        :recoverable, :rememberable, :validatable,
        :omniauthable, omniauth_providers: [:roblox]
 
+  has_one :personnel_person, class_name: "Personnel::Person", dependent: :nullify
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :posting_applications, dependent: :destroy

@@ -1,10 +1,5 @@
 module Components::ComboboxHelper
-  def render_combobox(items, &block)
-    content = capture(&block) if block
-    render "components/ui/combobox", items:, content:
-  end
-
-  def combobox_trigger(&block)
-    content_for :trigger, capture(&block) if block
+  def render_combobox(items, name:, selected_value: nil, selected_label: nil, placeholder: "Select...")
+    render "components/ui/combobox", items:, name:, selected_value:, selected_label:, placeholder:
   end
 end
