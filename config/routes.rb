@@ -19,7 +19,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resource :configurations, only: [:edit, :update]
-    resources :roles, only: [:index, :show, :edit, :update]
+    resources :roles
     resources :users, only: [:index, :edit, :update]
   end
 

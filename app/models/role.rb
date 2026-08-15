@@ -6,4 +6,8 @@ class Role < ApplicationRecord
   has_many :users, through: :user_roles
 
   validates :name, presence: true, uniqueness: true
+
+  def dialog_form_id
+    persisted? ? "role_dialog_form_#{id}" : "role_dialog_form_new"
+  end
 end

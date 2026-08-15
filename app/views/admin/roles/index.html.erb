@@ -1,13 +1,85 @@
-<h1 class="text-2xl font-semibold mb-6">Roles</h1>
+<div class="mx-auto space-y-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-foreground">Roles</h1>
 
-<div class="space-y-2">
-  <% @roles.each do |role| %>
-    <%= link_to admin_role_path(role), class: "flex items-center justify-between p-4 border border-border rounded-md hover:bg-accent transition-all duration-300" do %>
-      <div>
-        <p class="font-medium"><%= role.name %></p>
-        <p class="text-sm text-muted-foreground"><%= role.description %></p>
-      </div>
-      <%= lucide_icon "chevron-right", class: "w-4 h-4 text-muted-foreground" %>
+    <%= render_dialog do %>
+      <%= dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> New Role
+        <% end %>
+      <% end %>
+
+      <%= dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">New Role</h2>
+
+        <%= turbo_frame_tag Role.new.dialog_form_id do %>
+          <%= render "admin/roles/form", role: Role.new, all_permissions: @all_permissions %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Name" %>
+      <%= table_header "Description" %>
+      <%= table_header "Permissions" %>
+      <%= table_header "" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% @roles.each do |role| %>
+        <%= table_row class: "relative" do %>
+          <%= table_column do %>
+            <%= link_to role.name, admin_role_path(role), class: "after:absolute after:inset-0" %>
+          <% end %>
+          <%= table_column role.description %>
+          <%= table_column "#{pluralize(role.permissions.count, "permission")}" %>
+          <%= table_column do %>
+            <div class="flex justify-end gap-1">
+              <%= render_dialog do %>
+                <%= dialog_trigger do %>
+                  <%= render_button variant: :ghost, class: "relative z-10" do %>
+                    <%= lucide_icon "pencil", class: "w-4 h-4" %>
+                  <% end %>
+                <% end %>
+
+                <%= dialog_content do %>
+                  <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= role.name %></h2>
+
+                  <%= turbo_frame_tag role.dialog_form_id do %>
+                    <%= render "admin/roles/form", role: role, all_permissions: @all_permissions %>
+                  <% end %>
+                <% end %>
+              <% end %>
+
+              <%= render_alert_dialog do %>
+                <% alert_dialog_trigger do %>
+                  <%= render_button variant: :ghost, class: "relative z-10" do %>
+                    <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+                  <% end %>
+                <% end %>
+
+                <% alert_dialog_content do %>
+                  <h2 class="text-lg font-semibold text-foreground mb-2">
+                    Delete the "<%= role.name %>" role?
+                  </h2>
+
+                  <p class="text-sm text-muted-foreground">Users assigned to this role will lose the permissions it grants. This action cannot be undone.</p>
+                <% end %>
+
+                <% alert_dialog_cancel do %>
+                  <%= render_button "Cancel", variant: :outline %>
+                <% end %>
+
+                <% alert_dialog_continue do %>
+                  <%= button_to "Delete", admin_role_path(role), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium z-500" %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 </div>

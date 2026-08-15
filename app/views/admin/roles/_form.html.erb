@@ -1,0 +1,35 @@
+<%= form_with model: role, url: role.persisted? ? admin_role_path(role) : admin_roles_path, scope: :role, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if role.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% role.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_field :name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_area :description, rows: 2, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <p class="block font-medium text-foreground mb-1">Permissions</p>
+    <div class="space-y-2 max-h-64 overflow-y-auto border border-border rounded-md p-3">
+      <% all_permissions.each do |permission| %>
+        <%= render_checkbox(
+          label: permission.description.presence || permission.key,
+          name: "role[permission_ids][]",
+          value: permission.id,
+          checked: role.permissions.include?(permission)
+        ) %>
+      <% end %>
+    </div>
+  </div>
+
+  <%= render_button role.persisted? ? "Save Changes" : "Create Role", type: :submit %>
+<% end %>

@@ -18,7 +18,46 @@
   </div>
 <% end %>
 
-<%= render_button as: :link, variant: :outline, href: edit_admin_role_path(@role) do %>
-  <%= lucide_icon "pencil", class: "w-4 h-4 mr-2" %>
-  Edit Permissions
-<% end %>
+<div class="flex gap-2">
+  <%= render_dialog do %>
+    <%= dialog_trigger do %>
+      <%= render_button variant: :outline do %>
+        <%= lucide_icon "pencil", class: "w-4 h-4 mr-2" %>
+        Edit Role
+      <% end %>
+    <% end %>
+
+    <%= dialog_content do %>
+      <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= @role.name %></h2>
+
+      <%= turbo_frame_tag @role.dialog_form_id do %>
+        <%= render "admin/roles/form", role: @role, all_permissions: Permission.all %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= render_alert_dialog do %>
+    <% alert_dialog_trigger do %>
+      <%= render_button variant: :outline do %>
+        <%= lucide_icon "trash", class: "w-4 h-4 mr-2 text-destructive" %>
+        Delete Role
+      <% end %>
+    <% end %>
+
+    <% alert_dialog_content do %>
+      <h2 class="text-lg font-semibold text-foreground mb-2">
+        Delete the "<%= @role.name %>" role?
+      </h2>
+
+      <p class="text-sm text-muted-foreground">Users assigned to this role will lose the permissions it grants. This action cannot be undone.</p>
+    <% end %>
+
+    <% alert_dialog_cancel do %>
+      <%= render_button "Cancel", variant: :outline %>
+    <% end %>
+
+    <% alert_dialog_continue do %>
+      <%= button_to "Delete", admin_role_path(@role), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium z-500" %>
+    <% end %>
+  <% end %>
+</div>
