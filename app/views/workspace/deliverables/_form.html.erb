@@ -1,0 +1,24 @@
+<%= form_with model: deliverable, url: deliverable.persisted? ? workspace_project_feature_deliverable_path(project, feature, deliverable) : workspace_project_feature_deliverables_path(project, feature), scope: :deliverable, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if deliverable.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% deliverable.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_field :name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+  <div>
+    <%= form.label :description, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_area :description, rows: 3, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+  <div>
+    <%= form.label :milestone_id, "Milestone", class: "block font-medium text-foreground mb-1" %>
+    <%= form.collection_select :milestone_id, project.milestones, :id, :name, { prompt: "Select a milestone" }, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <%= render_button deliverable.persisted? ? "Save changes" : "Create deliverable", type: :submit %>
+<% end %>

@@ -1,0 +1,74 @@
+module Workspace
+  class DeliverablesController < ApplicationController
+    layout "admin"
+
+    before_action :authenticate_user!
+    before_action :set_project
+    before_action :set_feature
+
+    permission :show, desc: "View a workspace deliverable", auto_assign: ["Super Admin"]
+    permission :new, desc: "Add a workspace deliverable", auto_assign: ["Super Admin"]
+    permission :create, desc: "Create new workspace deliverables", auto_assign: ["Super Admin"]
+    permission :edit, desc: "Stage workspace deliverable edits", auto_assign: ["Manager", "Super Admin"]
+    permission :update, desc: "Edit workspace deliverables", auto_assign: ["Manager", "Super Admin"]
+    permission :destroy, desc: "Delete workspace deliverables", auto_assign: ["Super Admin"]
+
+    def show
+      @deliverable = @feature.deliverables.find(params[:id])
+    end
+
+    def new
+      @deliverable = @feature.deliverables.new
+    end
+
+    def create
+      @deliverable = @feature.deliverables.new(deliverable_params)
+
+      if @deliverable.save
+        redirect_to workspace_project_feature_deliverable_path(@project, @feature, @deliverable), notice: "Deliverable created successfully."
+      else
+        render turbo_stream: turbo_stream.update(@deliverable.dialog_form_id,
+          partial: "workspace/deliverables/form", locals: { project: @project, feature: @feature, deliverable: @deliverable }),
+          status: :unprocessable_entity
+      end
+    end
+
+    def edit
+      @deliverable = @feature.deliverables.find(params[:id])
+    end
+
+    def update
+      @deliverable = @feature.deliverables.find(params[:id])
+
+      if @deliverable.update(deliverable_params)
+        redirect_to workspace_project_feature_deliverable_path(@project, @feature, @deliverable), notice: "Deliverable updated successfully."
+      else
+        render turbo_stream: turbo_stream.update(@deliverable.dialog_form_id,
+          partial: "workspace/deliverables/form", locals: { project: @project, feature: @feature, deliverable: @deliverable }),
+          status: :unprocessable_entity
+      end
+    end
+
+    def destroy
+      @deliverable = @feature.deliverables.find(params[:id])
+
+      @deliverable.destroy
+
+      redirect_to workspace_project_feature_path(@project, @feature), notice: "Deliverable deleted successfully."
+    end
+
+    private
+
+    def deliverable_params
+      params.require(:deliverable).permit(:name, :description, :milestone_id)
+    end
+
+    def set_project
+      @project = Project.find(params[:project_id])
+    end
+
+    def set_feature
+      @feature = @project.features.find(params[:feature_id])
+    end
+  end
+end

@@ -1,0 +1,21 @@
+<%= form_with model: milestone, url: milestone.persisted? ? workspace_project_milestone_path(project, milestone) : workspace_project_milestones_path(project), scope: :milestone, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+    <% if milestone.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% milestone.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_field :name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <%= form.label :target_date, class: "block font-medium text-foreground mb-1" %>
+    <%= form.date_field :target_date, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <%= render_button milestone.persisted? ? "Save changes" : "Create milestone", type: :submit %>
+<% end %>

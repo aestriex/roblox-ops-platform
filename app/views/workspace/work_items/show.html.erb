@@ -1,0 +1,57 @@
+<div class="max-w-5xl mx-auto space-y-8">
+  <div>
+    <p class="text-sm text-muted-foreground">
+      <%= link_to @project.name, workspace_project_path(@project) %> /
+      <%= link_to @feature.name, workspace_project_feature_path(@project, @feature) %> /
+      <%= link_to @deliverable.name, workspace_project_feature_deliverable_path(@project, @feature, @deliverable) %>
+    </p>
+    <h1 class="text-2xl font-bold text-foreground"><%= @work_item.title %></h1>
+    <% if @work_item.description.present? %>
+      <p class="text-sm text-muted-foreground"><%= @work_item.description %></p>
+    <% end %>
+
+    <div class="flex items-center gap-2 mt-2">
+      <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"><%= @work_item.status.titleize %></span>
+      <% if @work_item.blocked? %>
+        <span class="px-2 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive">
+          Blocked<%= ": #{@work_item.blocked_reason}" if @work_item.blocked_reason.present? %>
+        </span>
+      <% end %>
+      <span class="text-sm text-muted-foreground">
+        Assigned to <%= @work_item.assignee&.full_name || "no one" %>
+      </span>
+      <% if @work_item.due_date %>
+        <span class="text-sm text-muted-foreground">Due <%= @work_item.due_date.strftime("%b %-d, %Y") %></span>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-foreground">Submissions</h2>
+
+      <%= render_dialog do %>
+        <% dialog_trigger do %>
+          <%= render_button variant: :outline do %>
+            <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Submission
+          <% end %>
+        <% end %>
+
+        <% dialog_content do %>
+          <% new_submission = Workspace::Submission.new(work_item: @work_item, submitted_by_id: current_user.personnel_person&.id) %>
+          <h2 class="text-lg font-semibold text-foreground mb-6">New Submission</h2>
+
+          <%= turbo_frame_tag new_submission.dialog_form_id do %>
+            <%= render "workspace/submissions/form", project: @project, feature: @feature, deliverable: @deliverable, work_item: @work_item, submission: new_submission, people: Personnel::Person.all %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div id="submissions">
+      <% @submissions.each do |submission| %>
+        <%= render "workspace/submissions/submission", submission: submission, project: @project, feature: @feature, deliverable: @deliverable, work_item: @work_item %>
+      <% end %>
+    </div>
+  </div>
+</div>

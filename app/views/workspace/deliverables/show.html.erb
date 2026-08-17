@@ -1,0 +1,54 @@
+<div class="max-w-5xl mx-auto space-y-8">
+  <div>
+    <p class="text-sm text-muted-foreground">
+      <%= link_to @project.name, workspace_project_path(@project) %> /
+      <%= link_to @feature.name, workspace_project_feature_path(@project, @feature) %>
+    </p>
+    <h1 class="text-2xl font-bold text-foreground"><%= @deliverable.name %></h1>
+    <% if @deliverable.description.present? %>
+      <p class="text-sm text-muted-foreground"><%= @deliverable.description %></p>
+    <% end %>
+    <span class="inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+      <%= @deliverable.milestone.name %>
+    </span>
+  </div>
+
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h2 class="text-lg font-semibold text-foreground">Work Items</h2>
+
+      <%= render_dialog do %>
+        <% dialog_trigger do %>
+          <%= render_button variant: :outline do %>
+            <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Work Item
+          <% end %>
+        <% end %>
+
+        <% dialog_content do %>
+          <% new_work_item = Workspace::WorkItem.new(deliverable: @deliverable) %>
+          <h2 class="text-lg font-semibold text-foreground mb-6">New Work Item</h2>
+
+          <%= turbo_frame_tag new_work_item.dialog_form_id do %>
+            <%= render "workspace/work_items/form", project: @project, feature: @feature, deliverable: @deliverable, work_item: new_work_item, assignees: Personnel::Person.all %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <%= render_table do %>
+      <%= table_head do %>
+        <%= table_header "Title" %>
+        <%= table_header "Status" %>
+        <%= table_header "Assignee" %>
+        <%= table_header "Due" %>
+        <%= table_header "" %>
+      <% end %>
+
+      <%= table_body do %>
+        <% @deliverable.work_items.each do |work_item| %>
+          <%= render "workspace/work_items/work_item_row", work_item: work_item, project: @project, feature: @feature, deliverable: @deliverable %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

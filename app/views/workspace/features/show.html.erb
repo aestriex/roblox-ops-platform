@@ -1,0 +1,37 @@
+<div class="max-w-5xl mx-auto space-y-8">
+  <div>
+    <p class="text-sm text-muted-foreground">
+      <%= link_to @project.name, workspace_project_path(@project) %>
+    </p>
+    <h1 class="text-2xl font-bold text-foreground"><%= @feature.name %></h1>
+    <% if @feature.description.present? %>
+      <p class="text-sm text-muted-foreground"><%= @feature.description %></p>
+    <% end %>
+  </div>
+
+  <div class="space-y-4">
+    <h2 class="text-lg font-semibold text-foreground">Deliverables</h2>
+    <div id="deliverables">
+      <% @feature.deliverables.each do |deliverable| %>
+        <%= render "workspace/deliverables/deliverable", deliverable: deliverable, project: @project, feature: @feature %>
+      <% end %>
+    </div>
+
+    <%= render_dialog do %>
+      <% dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Deliverable
+        <% end %>
+      <% end %>
+
+      <% dialog_content do %>
+        <% new_deliverable = Workspace::Deliverable.new(feature: @feature) %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">New Deliverable</h2>
+
+        <%= turbo_frame_tag new_deliverable.dialog_form_id do %>
+          <%= render "workspace/deliverables/form", project: @project, feature: @feature, deliverable: new_deliverable %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,24 @@
+<div id="<%= dom_id(milestone) %>" class="p-4 border border-border rounded-lg mb-3 flex items-center justify-between">
+  <div>
+    <p class="font-medium text-foreground"><%= milestone.name %></p>
+    <% if milestone.target_date %>
+      <p class="text-sm text-muted-foreground">Target: <%= milestone.target_date.strftime("%b %-d, %Y") %></p>
+    <% end %>
+  </div>
+
+  <%= render_dialog do %>
+    <% dialog_trigger do %>
+      <%= render_button variant: :ghost do %>
+        <%= lucide_icon "pencil", class: "w-4 h-4" %>
+      <% end %>
+    <% end %>
+
+    <% dialog_content do %>
+      <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= milestone.name %></h2>
+
+      <%= turbo_frame_tag milestone.dialog_form_id do %>
+        <%= render "workspace/milestones/form", project: project, milestone: milestone %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

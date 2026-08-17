@@ -1,0 +1,80 @@
+<div class="mx-auto space-y-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-foreground">Projects</h1>
+
+    <%= render_dialog do %>
+      <%= dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> New Project
+        <% end %>
+      <% end %>
+
+      <%= dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">New Project</h2>
+
+        <%= turbo_frame_tag Workspace::Project.new.dialog_form_id do %>
+          <%= render "workspace/projects/form", project: Workspace::Project.new %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Name" %>
+      <%= table_header "Description" %>
+      <%= table_header "" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% @projects.each do |project| %>
+        <%= table_row class: "relative" do %>
+          <%= table_column do %>
+          <%= link_to project.name, workspace_project_path(project), class: "after:absolute after:inset-0" %>
+          <% end %>
+          <%= table_column project.description %>
+          <%= table_column class: "relative z-10" do %>
+            <div class="flex justify-end gap-1">
+            <%= render_dialog do %>
+                <%= dialog_trigger do %>
+                    <%= render_button variant: :ghost do %>
+                        <%= lucide_icon "pencil", class: "w-4 h-4" %>
+                    <% end %>
+                <% end %>
+
+                <%= dialog_content do %>
+                    <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= project.name %></h2>
+
+                    <%= turbo_frame_tag project.dialog_form_id do %>
+                        <%= render "workspace/projects/form", project: project %>
+                    <% end %>
+                <% end %>
+            <% end %>
+
+              <%= render_alert_dialog do %>
+                <% alert_dialog_trigger do %>
+                  <%= render_button variant: :ghost do %>
+                    <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+                  <% end %>
+                <% end %>
+
+                <% alert_dialog_content do %>
+                  <h2 class="text-lg font-semibold text-foreground mb-2">Delete this project?</h2>
+                  <p class="text-sm text-muted-foreground">This will fail if milestones, features, or deliverables still reference it. This action cannot be undone.</p>
+                <% end %>
+
+                <% alert_dialog_cancel do %>
+                  <%= render_button "Cancel", variant: :outline %>
+                <% end %>
+
+                <% alert_dialog_continue do %>
+                  <%= button_to "Delete", workspace_project_path(project), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

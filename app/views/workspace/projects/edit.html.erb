@@ -1,0 +1,7 @@
+<div class="max-w-lg mx-auto space-y-6">
+  <h1 class="text-2xl font-bold text-foreground">Edit <%= @project.name %></h1>
+
+  <%= turbo_frame_tag @project.dialog_form_id do %>
+    <%= render "workspace/projects/form", project: @project %>
+  <% end %>
+</div>

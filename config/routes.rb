@@ -27,6 +27,19 @@ Rails.application.routes.draw do
     resources :people
   end
 
+  namespace :workspace do
+    resources :projects do
+      resources :milestones
+      resources :features, except: [:index] do
+        resources :deliverables, except: [:index] do
+          resources :work_items, except: [:index] do
+            resources :submissions, only: [:create, :destroy]
+          end
+        end
+      end
+    end
+  end
+
   root "pages#dashboard"
 
   get "up" => "rails/health#show", as: :rails_health_check

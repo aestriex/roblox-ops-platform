@@ -1,0 +1,32 @@
+<%= form_with model: submission, url: workspace_project_feature_deliverable_work_item_submissions_path(project, feature, deliverable, work_item), scope: :submission, multipart: true, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if submission.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% submission.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :notes, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_area :notes, rows: 3, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <%= form.label :package, "Attachment", class: "block font-medium text-foreground mb-1" %>
+    <%= form.file_field :package, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <p class="block font-medium text-foreground mb-1">Submitted By</p>
+    <%= render_combobox(
+      people.map { |p| { value: p.id, name: p.full_name, selected: p.id == submission.submitted_by_id } },
+      name: "submission[submitted_by_id]",
+      selected_value: submission.submitted_by_id,
+      selected_label: submission.submitted_by&.full_name,
+      placeholder: "Select who is submitting"
+    ) %>
+  </div>
+
+  <%= render_button "Submit", type: :submit %>
+<% end %>

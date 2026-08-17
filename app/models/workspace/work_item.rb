@@ -10,5 +10,9 @@ module Workspace
 
     validates :title, presence: true
     validates :status, inclusion: { in: STATUSES }
+
+    def dialog_form_id
+      persisted? ? "work_item_dialog_form_#{id}" : "work_item_dialog_form_new"
+    end
   end
 end

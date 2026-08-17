@@ -1,0 +1,52 @@
+<div id="<%= dom_id(deliverable) %>" class="p-4 border border-border rounded-lg mb-3 flex items-center justify-between">
+  <div>
+    <p class="font-medium text-foreground">
+      <%= link_to deliverable.name, workspace_project_feature_deliverable_path(project, feature, deliverable) %>
+    </p>
+    <% if deliverable.description.present? %>
+      <p class="text-sm text-muted-foreground"><%= deliverable.description %></p>
+    <% end %>
+    <span class="inline-block mt-1 px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+      <%= deliverable.milestone.name %>
+    </span>
+  </div>
+
+  <div class="flex gap-1">
+    <%= render_dialog do %>
+      <% dialog_trigger do %>
+        <%= render_button variant: :ghost do %>
+          <%= lucide_icon "pencil", class: "w-4 h-4" %>
+        <% end %>
+      <% end %>
+
+      <% dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= deliverable.name %></h2>
+
+        <%= turbo_frame_tag deliverable.dialog_form_id do %>
+          <%= render "workspace/deliverables/form", project: project, feature: feature, deliverable: deliverable %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= render_alert_dialog do %>
+      <% alert_dialog_trigger do %>
+        <%= render_button variant: :ghost do %>
+          <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+        <% end %>
+      <% end %>
+
+      <% alert_dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-2">Delete this deliverable?</h2>
+        <p class="text-sm text-muted-foreground">This will fail if work items still reference it. This action cannot be undone.</p>
+      <% end %>
+
+      <% alert_dialog_cancel do %>
+        <%= render_button "Cancel", variant: :outline %>
+      <% end %>
+
+      <% alert_dialog_continue do %>
+        <%= button_to "Delete", workspace_project_feature_deliverable_path(project, feature, deliverable), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

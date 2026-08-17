@@ -6,6 +6,9 @@ module NavigationHelper
     { section: "Hiring", items: [
       { label: "Job Postings", path: :hiring_job_postings_path, icon: "briefcase", permission: "hiring.job_postings.index" }
     ]},
+    { section: "Development", items: [
+      { label: "Projects", path: :workspace_projects_path, icon: "folder", permission: "workspace.projects.index" }
+    ]},
     { section: "Personnel", items: [
       { label: "People", path: :personnel_people_path, icon: "users", permission: "personnel.people.index" }
     ]},

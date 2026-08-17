@@ -8,5 +8,9 @@ module Workspace
 
     validates :name, presence: true
     validates :target_date, presence: true
+
+    def dialog_form_id
+      persisted? ? "milestone_dialog_form_#{id}" : "milestone_dialog_form_new"
+    end
   end
 end

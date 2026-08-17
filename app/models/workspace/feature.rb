@@ -9,5 +9,9 @@ module Workspace
     has_many :submissions, through: :work_items
 
     validates :name, presence: true
+
+    def dialog_form_id
+      persisted? ? "feature_dialog_form_#{id}" : "feature_dialog_form_new"
+    end
   end
 end

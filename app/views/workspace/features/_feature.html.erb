@@ -1,0 +1,49 @@
+<div id="<%= dom_id(feature) %>" class="p-4 border border-border rounded-lg mb-3 flex items-center justify-between">
+  <div>
+    <p class="font-medium text-foreground">
+      <%= link_to feature.name, workspace_project_feature_path(project, feature) %>
+    </p>
+    <% if feature.description.present? %>
+      <p class="text-sm text-muted-foreground"><%= feature.description %></p>
+    <% end %>
+  </div>
+
+  <div class="flex gap-1">
+    <%= render_dialog do %>
+      <% dialog_trigger do %>
+        <%= render_button variant: :ghost do %>
+          <%= lucide_icon "pencil", class: "w-4 h-4" %>
+        <% end %>
+      <% end %>
+
+      <% dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= feature.name %></h2>
+
+        <%= turbo_frame_tag feature.dialog_form_id do %>
+          <%= render "workspace/features/form", project: project, feature: feature %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= render_alert_dialog do %>
+      <% alert_dialog_trigger do %>
+        <%= render_button variant: :ghost do %>
+          <%= lucide_icon "trash", class: "w-4 h-4 text-destructive" %>
+        <% end %>
+      <% end %>
+
+      <% alert_dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-2">Delete this feature?</h2>
+        <p class="text-sm text-muted-foreground">This will fail if deliverables still reference it. This action cannot be undone.</p>
+      <% end %>
+
+      <% alert_dialog_cancel do %>
+        <%= render_button "Cancel", variant: :outline %>
+      <% end %>
+
+      <% alert_dialog_continue do %>
+        <%= button_to "Delete", workspace_project_feature_path(project, feature), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+      <% end %>
+    <% end %>
+  </div>
+</div>
