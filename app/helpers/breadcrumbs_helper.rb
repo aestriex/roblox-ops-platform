@@ -29,27 +29,27 @@ module BreadcrumbsHelper
     resource_name = segments[segments.index(uuid) - 1]
 
     case resource_name
-      when "job_postings"
+    when "job_postings"
         Hiring::JobPosting.find_by(id: uuid)&.title
-      when "sections"
+    when "sections"
         Hiring::Section.find_by(id: uuid)&.title
-      when "roles"
+    when "roles"
         Role.find_by(id: uuid)&.name
-      when "users"
+    when "users"
         User.find_by(id: uuid)&.display_name
-      when "posting_applications"
+    when "posting_applications"
         Hiring::PostingApplication.find_by(id: uuid)&.user&.display_name
-      when "projects"
+    when "projects"
         Workspace::Project.find_by(id: uuid)&.name
-      when "features"
+    when "features"
         Workspace::Feature.find_by(id: uuid)&.name
-      when "deliverables"
+    when "deliverables"
         Workspace::Deliverable.find_by(id: uuid)&.name
-      when "work_items"
+    when "work_items"
         Workspace::WorkItem.find_by(id: uuid)&.title
-      else
+    else
         uuid
-      end
+    end
     end
 
   def humanize_segment(segment)

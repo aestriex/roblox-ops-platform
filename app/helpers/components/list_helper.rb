@@ -5,8 +5,8 @@ module Components::ListHelper
          outline-none aria-selected:bg-accent aria-selected:text-accent-foreground hover:bg-accent hover:text-accent-foreground
          data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       role: "option",
-      data: {value:, selected:},
-      aria: {selected:}
+      data: { value:, selected: },
+      aria: { selected: }
   end
 
   def render_list(items, as: :div, **options)

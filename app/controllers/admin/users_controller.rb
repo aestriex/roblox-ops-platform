@@ -4,9 +4,9 @@ module Admin
 
     before_action :authenticate_user!
 
-    permission :index, desc: "View all users", auto_assign: ["Super Admin"]
-    permission :edit, desc: "Access user role editor", auto_assign: ["Super Admin"]
-    permission :update, desc: "Change a user's roles", key: "users.manage", auto_assign: ["Super Admin"]
+    permission :index, desc: "View all users", auto_assign: [ "Super Admin" ]
+    permission :edit, desc: "Access user role editor", auto_assign: [ "Super Admin" ]
+    permission :update, desc: "Change a user's roles", key: "users.manage", auto_assign: [ "Super Admin" ]
 
     def index
       @users = User.all

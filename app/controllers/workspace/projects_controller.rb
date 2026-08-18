@@ -4,13 +4,13 @@ module Workspace
 
     before_action :authenticate_user!
 
-    permission :index, desc: "View all workspace projects", auto_assign: ["Super Admin"]
-    permission :show, desc: "View a workspace project", auto_assign: ["Super Admin"]
-    permission :new, desc: "Add a workspace project", auto_assign: ["Super Admin"]
-    permission :create, desc: "Create new workspace projects", auto_assign: ["Super Admin"]
-    permission :edit, desc: "Stage workspace project edits", auto_assign: ["Manager", "Super Admin"]
-    permission :update, desc: "Edit workspace projects", auto_assign: ["Manager", "Super Admin"]
-    permission :destroy, desc: "Delete workspace projects", auto_assign: ["Super Admin"]
+    permission :index, desc: "View all workspace projects", auto_assign: [ "Super Admin" ]
+    permission :show, desc: "View a workspace project", auto_assign: [ "Super Admin" ]
+    permission :new, desc: "Add a workspace project", auto_assign: [ "Super Admin" ]
+    permission :create, desc: "Create new workspace projects", auto_assign: [ "Super Admin" ]
+    permission :edit, desc: "Stage workspace project edits", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update, desc: "Edit workspace projects", auto_assign: [ "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete workspace projects", auto_assign: [ "Super Admin" ]
 
     def index
       @projects = Project.all

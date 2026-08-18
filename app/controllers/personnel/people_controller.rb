@@ -4,12 +4,12 @@ module Personnel
 
     before_action :authenticate_user!
 
-    permission :index, desc: "View all people", auto_assign: ["Staff", "Manager", "Super Admin"]
-    permission :new, desc: "Add a person", auto_assign: ["Manager", "Super Admin"]
-    permission :create, desc: "Create new personnel records", auto_assign: ["Manager", "Super Admin"]
-    permission :edit, desc: "Access the edit person form", auto_assign: ["Manager", "Super Admin"]
-    permission :update, desc: "Edit personnel records", auto_assign: ["Manager", "Super Admin"]
-    permission :destroy, desc: "Delete personnel records", auto_assign: ["Super Admin"]
+    permission :index, desc: "View all people", auto_assign: [ "Staff", "Manager", "Super Admin" ]
+    permission :new, desc: "Add a person", auto_assign: [ "Manager", "Super Admin" ]
+    permission :create, desc: "Create new personnel records", auto_assign: [ "Manager", "Super Admin" ]
+    permission :edit, desc: "Access the edit person form", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update, desc: "Edit personnel records", auto_assign: [ "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete personnel records", auto_assign: [ "Super Admin" ]
 
     def index
       @people = Person.all

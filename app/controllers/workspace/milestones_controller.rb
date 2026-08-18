@@ -5,12 +5,12 @@ module Workspace
     before_action :authenticate_user!
     before_action :set_project
 
-    permission :index, desc: "View all project milestones", auto_assign: ["Super Admin"]
-    permission :new, desc: "Add a project milestone", auto_assign: ["Super Admin"]
-    permission :create, desc: "Create new project milestones", auto_assign: ["Super Admin"]
-    permission :edit, desc: "Stage project milestones", auto_assign: ["Manager", "Super Admin"]
-    permission :update, desc: "Edit project milestones", auto_assign: ["Manager", "Super Admin"]
-    permission :destroy, desc: "Delete project milestones", auto_assign: ["Super Admin"]
+    permission :index, desc: "View all project milestones", auto_assign: [ "Super Admin" ]
+    permission :new, desc: "Add a project milestone", auto_assign: [ "Super Admin" ]
+    permission :create, desc: "Create new project milestones", auto_assign: [ "Super Admin" ]
+    permission :edit, desc: "Stage project milestones", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update, desc: "Edit project milestones", auto_assign: [ "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete project milestones", auto_assign: [ "Super Admin" ]
 
     def index
       @milestones = @project.milestones.apply_filters(filter_params)

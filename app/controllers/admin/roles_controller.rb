@@ -3,15 +3,15 @@ module Admin
     layout "admin"
 
     before_action :authenticate_user!
-    before_action :can_manage_role!, only: [:edit, :update, :destroy]
+    before_action :can_manage_role!, only: [ :edit, :update, :destroy ]
 
-    permission :index, desc: "View roles", auto_assign: ["Super Admin"]
-    permission :show, desc: "View a role's permissions", auto_assign: ["Super Admin"]
-    permission :new, desc: "Access the new role form", auto_assign: ["Super Admin"]
-    permission :create, desc: "Create new roles", auto_assign: ["Super Admin"]
-    permission :edit, desc: "Access role permission editor", auto_assign: ["Super Admin"]
-    permission :update, desc: "Change a role's permissions", key: "roles.manage", auto_assign: ["Super Admin"]
-    permission :destroy, desc: "Delete roles", auto_assign: ["Super Admin"]
+    permission :index, desc: "View roles", auto_assign: [ "Super Admin" ]
+    permission :show, desc: "View a role's permissions", auto_assign: [ "Super Admin" ]
+    permission :new, desc: "Access the new role form", auto_assign: [ "Super Admin" ]
+    permission :create, desc: "Create new roles", auto_assign: [ "Super Admin" ]
+    permission :edit, desc: "Access role permission editor", auto_assign: [ "Super Admin" ]
+    permission :update, desc: "Change a role's permissions", key: "roles.manage", auto_assign: [ "Super Admin" ]
+    permission :destroy, desc: "Delete roles", auto_assign: [ "Super Admin" ]
 
     def index
       @roles = Role.all

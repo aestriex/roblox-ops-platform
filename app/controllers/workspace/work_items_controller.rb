@@ -4,26 +4,26 @@ module Workspace
 
     before_action :authenticate_user!
     before_action :set_project
-    before_action :set_feature, except: [:show]
-    before_action :set_deliverable, except: [:show]
+    before_action :set_feature, except: [ :show ]
+    before_action :set_deliverable, except: [ :show ]
 
-    permission :show, desc: "View a workspace work item", auto_assign: ["Super Admin"]
-    permission :new, desc: "Add a workspace work item", auto_assign: ["Super Admin"]
-    permission :create, desc: "Create new workspace work items", auto_assign: ["Super Admin"]
-    permission :edit, desc: "Stage workspace work item edits", auto_assign: ["Manager", "Super Admin"]
-    permission :update, desc: "Edit workspace work items", auto_assign: ["Manager", "Super Admin"]
-    permission :destroy, desc: "Delete workspace work items", auto_assign: ["Super Admin"]
+    permission :show, desc: "View a workspace work item", auto_assign: [ "Super Admin" ]
+    permission :new, desc: "Add a workspace work item", auto_assign: [ "Super Admin" ]
+    permission :create, desc: "Create new workspace work items", auto_assign: [ "Super Admin" ]
+    permission :edit, desc: "Stage workspace work item edits", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update, desc: "Edit workspace work items", auto_assign: [ "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete workspace work items", auto_assign: [ "Super Admin" ]
 
     permission :mark_backlog, desc: "Move work item to Backlog", auto_assign: [], guard: false
-    permission :mark_assigned, desc: "Move work item to Assigned", auto_assign: ["Manager", "Super Admin"], guard: false
+    permission :mark_assigned, desc: "Move work item to Assigned", auto_assign: [ "Manager", "Super Admin" ], guard: false
     permission :mark_in_progress, desc: "Move work item to In Progress", auto_assign: [], guard: false
     permission :mark_in_review, desc: "Move work item to In Review", auto_assign: [], guard: false
-    permission :mark_integrated, desc: "Move work item to Integrated", auto_assign: ["Manager", "Super Admin"], guard: false
-    permission :mark_published, desc: "Move work item to Published", auto_assign: ["Super Admin"], guard: false
+    permission :mark_integrated, desc: "Move work item to Integrated", auto_assign: [ "Manager", "Super Admin" ], guard: false
+    permission :mark_published, desc: "Move work item to Published", auto_assign: [ "Super Admin" ], guard: false
 
-    permission :update_description, desc: "Edit work item description inline", auto_assign: ["Manager", "Super Admin"]
-    permission :update_due_date, desc: "Edit work item due date inline", auto_assign: ["Manager", "Super Admin"]
-    permission :update_assignee, desc: "Edit work item assignee inline", auto_assign: ["Manager", "Super Admin"]
+    permission :update_description, desc: "Edit work item description inline", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_due_date, desc: "Edit work item due date inline", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_assignee, desc: "Edit work item assignee inline", auto_assign: [ "Manager", "Super Admin" ]
 
     def show
       @work_item = @project.work_items.find(params[:id])

@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
        :recoverable, :rememberable, :validatable,
-       :omniauthable, omniauth_providers: [:roblox]
+       :omniauthable, omniauth_providers: [ :roblox ]
 
   has_one :personnel_person, class_name: "Personnel::Person", dependent: :nullify
   has_many :user_roles, dependent: :destroy

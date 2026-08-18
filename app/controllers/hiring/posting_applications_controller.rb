@@ -5,8 +5,8 @@ module Hiring
     before_action :authenticate_user!
     before_action :set_job_posting
 
-    permission :index, desc: "View applications for a job posting", auto_assign: ["Staff", "Manager", "Super Admin"]
-    permission :show, desc: "View an individual applicant's submission", auto_assign: ["Staff", "Manager", "Super Admin"]
+    permission :index, desc: "View applications for a job posting", auto_assign: [ "Staff", "Manager", "Super Admin" ]
+    permission :show, desc: "View an individual applicant's submission", auto_assign: [ "Staff", "Manager", "Super Admin" ]
 
     def index
       @posting_applications = @job_posting.posting_applications.includes(:user).order(created_at: :desc)

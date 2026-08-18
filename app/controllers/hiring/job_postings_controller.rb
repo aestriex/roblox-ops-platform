@@ -3,13 +3,13 @@ module Hiring
     layout "admin"
     before_action :authenticate_user!
 
-    permission :index, desc: "View job postings list", auto_assign: ["Staff", "Manager", "Super Admin"]
-    permission :new, desc: "Access the new job posting form", auto_assign: ["Manager", "Super Admin"]
-    permission :create, desc: "Create new job postings", auto_assign: ["Manager", "Super Admin"]
-    permission :edit, desc: "Access the edit job posting form", auto_assign: ["Staff", "Manager", "Super Admin"]
-    permission :update, desc: "Edit job postings", auto_assign: ["Staff", "Manager", "Super Admin"]
-    permission :destroy, desc: "Delete job postings", key: "forms.delete", auto_assign: ["Super Admin"]
-    permission :update_status, desc: "Change job posting status (publish/close/reopen)", auto_assign: ["Staff", "Manager", "Super Admin"]
+    permission :index, desc: "View job postings list", auto_assign: [ "Staff", "Manager", "Super Admin" ]
+    permission :new, desc: "Access the new job posting form", auto_assign: [ "Manager", "Super Admin" ]
+    permission :create, desc: "Create new job postings", auto_assign: [ "Manager", "Super Admin" ]
+    permission :edit, desc: "Access the edit job posting form", auto_assign: [ "Staff", "Manager", "Super Admin" ]
+    permission :update, desc: "Edit job postings", auto_assign: [ "Staff", "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete job postings", key: "forms.delete", auto_assign: [ "Super Admin" ]
+    permission :update_status, desc: "Change job posting status (publish/close/reopen)", auto_assign: [ "Staff", "Manager", "Super Admin" ]
 
     def index
       @job_postings = JobPosting.all

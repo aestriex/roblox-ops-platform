@@ -3,8 +3,8 @@ module Admin
     layout "admin"
     before_action :authenticate_user!
 
-    permission :edit, desc: "View organization configuration", auto_assign: ["Super Admin"]
-    permission :update, desc: "Edit organization configuration", auto_assign: ["Super Admin"]
+    permission :edit, desc: "View organization configuration", auto_assign: [ "Super Admin" ]
+    permission :update, desc: "Edit organization configuration", auto_assign: [ "Super Admin" ]
 
     def edit
       @configuration = Configuration.instance
@@ -22,7 +22,7 @@ module Admin
     private
 
     def configuration_params
-      permitted = params.require(:configuration).permit(:org_name, external_links: [:label, :url, :icon], enabled_modules: [])
+      permitted = params.require(:configuration).permit(:org_name, external_links: [ :label, :url, :icon ], enabled_modules: [])
       permitted[:external_links] = permitted[:external_links]&.reject { |link| link[:url].blank? }
 
       enabled = (permitted.delete(:enabled_modules) || []).reject(&:blank?)

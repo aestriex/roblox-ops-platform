@@ -8,8 +8,8 @@ module Workspace
     before_action :set_deliverable
     before_action :set_work_item
 
-    permission :create, desc: "Submit work for a workspace work item", auto_assign: ["Manager", "Super Admin"]
-    permission :destroy, desc: "Delete workspace submissions", auto_assign: ["Super Admin"]
+    permission :create, desc: "Submit work for a workspace work item", auto_assign: [ "Manager", "Super Admin" ]
+    permission :destroy, desc: "Delete workspace submissions", auto_assign: [ "Super Admin" ]
 
     def create
       @submission = @work_item.submissions.new(submission_params)

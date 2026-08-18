@@ -9,6 +9,6 @@ class CreatePostingApplications < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :posting_applications, [:user_id, :job_posting_id], unique: true
+    add_index :posting_applications, [ :user_id, :job_posting_id ], unique: true
   end
 end

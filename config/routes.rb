@@ -13,14 +13,14 @@ Rails.application.routes.draw do
           patch :reorder, on: :collection
         end
       end
-      resources :posting_applications, only: [:index, :show, :destroy]
+      resources :posting_applications, only: [ :index, :show, :destroy ]
     end
   end
 
   namespace :admin do
-    resource :configurations, only: [:edit, :update]
+    resource :configurations, only: [ :edit, :update ]
     resources :roles
-    resources :users, only: [:index, :edit, :update]
+    resources :users, only: [ :index, :edit, :update ]
   end
 
   namespace :personnel do
@@ -30,12 +30,12 @@ Rails.application.routes.draw do
   namespace :workspace do
     resources :projects do
       resources :milestones
-      resources :deliverables, only: [:index, :show]
-      resources :work_items, only: [:show]
+      resources :deliverables, only: [ :index, :show ]
+      resources :work_items, only: [ :show ]
       resources :features do
-        resources :deliverables, except: [:index] do
-          resources :work_items, except: [:index] do
-            resources :submissions, only: [:create, :destroy]
+        resources :deliverables, except: [ :index ] do
+          resources :work_items, except: [ :index ] do
+            resources :submissions, only: [ :create, :destroy ]
             patch :update_status, on: :member
             patch :update_description, on: :member
             patch :update_due_date, on: :member

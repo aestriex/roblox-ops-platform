@@ -4,11 +4,11 @@ module Public
 
     restrict_to_module :hiring
 
-    before_action :authenticate_user!, except: [:index]
-    before_action :set_job_posting, except: [:index]
-    before_action :ensure_open!, except: [:complete, :index]
-    before_action :ensure_editable!, only: [:show, :update], except: [:index]
-    before_action :set_section, except: [:index]
+    before_action :authenticate_user!, except: [ :index ]
+    before_action :set_job_posting, except: [ :index ]
+    before_action :ensure_open!, except: [ :complete, :index ]
+    before_action :ensure_editable!, only: [ :show, :update ], except: [ :index ]
+    before_action :set_section, except: [ :index ]
 
     def index
       @postings = Hiring::JobPosting.where(status: "open")

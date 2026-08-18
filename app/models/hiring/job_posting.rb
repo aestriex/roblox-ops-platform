@@ -15,7 +15,7 @@ module Hiring
     before_create :generate_slug
 
     include Filterable
-    filterable_by :status, label: "Status", options: ->(*) { JobPosting::STATUSES.map { |s| [s.titleize, s] } }
+    filterable_by :status, label: "Status", options: ->(*) { JobPosting::STATUSES.map { |s| [ s.titleize, s ] } }
 
     def status_badge_classes
       case status
