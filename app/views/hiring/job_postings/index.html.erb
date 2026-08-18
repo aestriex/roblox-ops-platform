@@ -13,7 +13,7 @@
       <p class="text-sm text-muted-foreground mb-6">Enter the initial details. You can add sections and questions after creating it.</p>
 
       <%= turbo_frame_tag "job_posting_dialog_form" do %>
-        <%= render "hiring/job_postings/form", job_posting: JobPosting.new %>
+        <%= render "hiring/job_postings/form", job_posting: Hiring::JobPosting.new %>
       <% end %>
     <% end %>
   <% end %>

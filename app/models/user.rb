@@ -6,7 +6,7 @@ class User < ApplicationRecord
   has_one :personnel_person, class_name: "Personnel::Person", dependent: :nullify
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
-  has_many :posting_applications, dependent: :destroy
+  has_many :posting_applications, class_name: "Hiring::PostingApplication", dependent: :destroy
 
   def can?(permission_key)
     roles.joins(:permissions).where(permissions: { key: permission_key }).exists?
@@ -18,5 +18,9 @@ class User < ApplicationRecord
 
   def display_name
     username.presence || email
+  end
+
+  def highest_role
+    roles.order(rank: :desc).first
   end
 end

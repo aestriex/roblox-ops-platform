@@ -6,4 +6,5 @@ class ApplicationController < ActionController::Base
   stale_when_importmap_changes
 
   include Permissible
+  include ModuleGated
 end

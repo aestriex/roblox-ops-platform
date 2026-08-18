@@ -26,30 +26,35 @@
     --radius-sm: calc(0.5rem - 4px);
 
     --spacing-header: 4rem;
+    --spacing-gutter-xs: 0.5rem;
+    --spacing-gutter-sm: 0.75rem;
+    --spacing-gutter-md: 1rem;
+    --spacing-gutter-lg: 1.5rem;
+    --spacing-gutter-xl: 2rem;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 .dark {
-    --color-background: hsl(240 5% 11%);
-    --color-foreground: hsl(0 0% 98%);
-    --color-muted: hsl(240 5% 15%);
-    --color-muted-foreground: hsl(240 4% 65%);
-    --color-accent: hsl(240 5% 18%);
-    --color-accent-foreground: hsl(0 0% 98%);
-    --color-popover: hsl(240 5% 11%);
-    --color-popover-foreground: hsl(0 0% 98%);
-    --color-border: hsl(240 5% 20%);
-    --color-input: hsl(240 5% 20%);
-    --color-card: hsl(240 5% 11%);
-    --color-card-foreground: hsl(0 0% 98%);
-    --color-primary: hsl(0 0% 98%);
-    --color-primary-foreground: hsl(240 5% 11%);
-    --color-secondary: hsl(240 5% 18%);
-    --color-secondary-foreground: hsl(0 0% 98%);
+    --color-background: hsl(240 8% 6%);
+    --color-foreground: hsl(0 0% 96%);
+    --color-muted: hsl(240 6% 11%);
+    --color-muted-foreground: hsl(240 4% 58%);
+    --color-accent: hsl(240 6% 14%);
+    --color-accent-foreground: hsl(0 0% 96%);
+    --color-popover: hsl(240 7% 8%);
+    --color-popover-foreground: hsl(0 0% 96%);
+    --color-border: hsl(240 5% 16%);
+    --color-input: hsl(240 5% 16%);
+    --color-card: hsl(240 7% 8%);
+    --color-card-foreground: hsl(0 0% 96%);
+    --color-primary: hsl(0 0% 96%);
+    --color-primary-foreground: hsl(240 7% 8%);
+    --color-secondary: hsl(240 6% 14%);
+    --color-secondary-foreground: hsl(0 0% 96%);
     --color-destructive: hsl(355 65% 52%);
-    --color-destructive-foreground: hsl(0 0% 98%);
-    --color-ring: hsl(240 5% 65%);
+    --color-destructive-foreground: hsl(0 0% 96%);
+    --color-ring: hsl(240 5% 55%);
 }
 
 @layer base {

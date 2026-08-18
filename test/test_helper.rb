@@ -7,6 +7,12 @@ module ActiveSupport
     # Run tests in parallel with specified workers
     parallelize(workers: :number_of_processors)
 
+    set_fixture_class(
+      hiring_job_postings: Hiring::JobPosting,
+      hiring_sections: Hiring::Section,
+      hiring_questions: Hiring::Question
+    )
+
     # Setup all fixtures in test/fixtures/*.yml for all tests in alphabetical order.
     fixtures :all
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_17_235521) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -43,24 +43,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
-  create_table "answers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.jsonb "disabled_modules", default: [], null: false
+    t.jsonb "external_links"
+    t.string "org_name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "hiring_answers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.uuid "posting_application_id", null: false
     t.uuid "question_id", null: false
     t.datetime "updated_at", null: false
     t.jsonb "value"
-    t.index ["posting_application_id", "question_id"], name: "index_answers_on_posting_application_id_and_question_id", unique: true
-    t.index ["posting_application_id"], name: "index_answers_on_posting_application_id"
-    t.index ["question_id"], name: "index_answers_on_question_id"
+    t.index ["posting_application_id", "question_id"], name: "index_hiring_answers_on_posting_application_id_and_question_id", unique: true
+    t.index ["posting_application_id"], name: "index_hiring_answers_on_posting_application_id"
+    t.index ["question_id"], name: "index_hiring_answers_on_question_id"
   end
 
-  create_table "configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "org_name"
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "job_postings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "hiring_job_postings", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.string "department"
     t.text "description"
@@ -68,7 +70,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
     t.string "status"
     t.string "title"
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_job_postings_on_slug", unique: true
+    t.index ["slug"], name: "index_hiring_job_postings_on_slug", unique: true
+  end
+
+  create_table "hiring_posting_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "job_posting_id", null: false
+    t.string "status", default: "in_progress", null: false
+    t.datetime "submitted_at"
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["job_posting_id"], name: "index_hiring_posting_applications_on_job_posting_id"
+    t.index ["user_id", "job_posting_id"], name: "idx_on_user_id_job_posting_id_c1057030a8", unique: true
+    t.index ["user_id"], name: "index_hiring_posting_applications_on_user_id"
+  end
+
+  create_table "hiring_questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "label"
+    t.text "options"
+    t.integer "position"
+    t.string "question_type"
+    t.boolean "required"
+    t.uuid "section_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["section_id"], name: "index_hiring_questions_on_section_id"
+  end
+
+  create_table "hiring_sections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.uuid "job_posting_id", null: false
+    t.integer "position"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["job_posting_id"], name: "index_hiring_sections_on_job_posting_id"
   end
 
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -93,30 +128,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
     t.index ["user_id"], name: "index_personnel_people_on_user_id"
   end
 
-  create_table "posting_applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.uuid "job_posting_id", null: false
-    t.string "status", default: "in_progress", null: false
-    t.datetime "submitted_at"
-    t.datetime "updated_at", null: false
-    t.uuid "user_id", null: false
-    t.index ["job_posting_id"], name: "index_posting_applications_on_job_posting_id"
-    t.index ["user_id", "job_posting_id"], name: "index_posting_applications_on_user_id_and_job_posting_id", unique: true
-    t.index ["user_id"], name: "index_posting_applications_on_user_id"
-  end
-
-  create_table "questions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "label"
-    t.text "options"
-    t.integer "position"
-    t.string "question_type"
-    t.boolean "required"
-    t.uuid "section_id", null: false
-    t.datetime "updated_at", null: false
-    t.index ["section_id"], name: "index_questions_on_section_id"
-  end
-
   create_table "role_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", null: false
     t.uuid "permission_id", null: false
@@ -131,16 +142,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
     t.datetime "created_at", null: false
     t.string "description"
     t.string "name"
+    t.integer "rank"
     t.datetime "updated_at", null: false
-  end
-
-  create_table "sections", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.uuid "job_posting_id", null: false
-    t.integer "position"
-    t.string "title"
-    t.datetime "updated_at", null: false
-    t.index ["job_posting_id"], name: "index_sections_on_job_posting_id"
   end
 
   create_table "user_roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -231,15 +234,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_15_212025) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "answers", "posting_applications"
-  add_foreign_key "answers", "questions"
+  add_foreign_key "hiring_answers", "hiring_posting_applications", column: "posting_application_id"
+  add_foreign_key "hiring_answers", "hiring_questions", column: "question_id"
+  add_foreign_key "hiring_posting_applications", "hiring_job_postings", column: "job_posting_id"
+  add_foreign_key "hiring_posting_applications", "users"
+  add_foreign_key "hiring_questions", "hiring_sections", column: "section_id"
+  add_foreign_key "hiring_sections", "hiring_job_postings", column: "job_posting_id"
   add_foreign_key "personnel_people", "users"
-  add_foreign_key "posting_applications", "job_postings"
-  add_foreign_key "posting_applications", "users"
-  add_foreign_key "questions", "sections"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"
-  add_foreign_key "sections", "job_postings"
   add_foreign_key "user_roles", "roles"
   add_foreign_key "user_roles", "users"
   add_foreign_key "workspace_deliverables", "workspace_features", column: "feature_id"

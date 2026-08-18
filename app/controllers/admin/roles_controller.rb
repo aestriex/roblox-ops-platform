@@ -3,6 +3,7 @@ module Admin
     layout "admin"
 
     before_action :authenticate_user!
+    before_action :can_manage_role!, only: [:edit, :update, :destroy]
 
     permission :index, desc: "View roles", auto_assign: ["Super Admin"]
     permission :show, desc: "View a role's permissions", auto_assign: ["Super Admin"]
@@ -69,6 +70,13 @@ module Admin
 
     def role_params
       params.require(:role).permit(:name, :description, permission_ids: [])
+    end
+
+    def can_manage_role
+      target_role = Role.find(params[:id])
+      if target_role.rank >= current_user.highest_role.rank
+        redirect_to admin_roles_path, alert: "You cannot manage a role equal to or higher than your own."
+      end
     end
   end
 end

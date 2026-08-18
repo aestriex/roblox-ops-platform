@@ -2,6 +2,8 @@ module Public
   class PostingApplicationsController < ApplicationController
     layout "public_application"
 
+    restrict_to_module :hiring
+
     before_action :authenticate_user!, except: [:index]
     before_action :set_job_posting, except: [:index]
     before_action :ensure_open!, except: [:complete, :index]
@@ -9,7 +11,7 @@ module Public
     before_action :set_section, except: [:index]
 
     def index
-      @postings = JobPosting.where(status: "open")
+      @postings = Hiring::JobPosting.where(status: "open")
     end
 
     def show
@@ -52,7 +54,7 @@ module Public
     private
 
     def set_job_posting
-      @job_posting = JobPosting.find_by!(slug: params[:slug])
+      @job_posting = Hiring::JobPosting.find_by!(slug: params[:slug])
     end
 
     def ensure_open!

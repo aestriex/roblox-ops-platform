@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(@question) do %>
-  <%= form_with model: @question, url: hiring_job_posting_section_question_path(@job_posting, @section, @question), method: :patch, class: "space-y-4 p-4 border border-border rounded-lg mb-4", data: { controller: "toggle-visibility", "toggle-visibility-shown-types-value": Question::OPTION_TYPES.to_json } do |form| %>
+  <%= form_with model: @question, url: hiring_job_posting_section_question_path(@job_posting, @section, @question), method: :patch, class: "space-y-4 p-4 border border-border rounded-lg mb-4", data: { controller: "toggle-visibility", "toggle-visibility-shown-types-value": Hiring::Question::OPTION_TYPES.to_json } do |form| %>
     <div>
       <%= form.label :label, "Question Text", class: "block font-medium text-foreground mb-1" %>
       <%= form.text_field :label, class: "w-full border border-input rounded-md px-4 py-2 bg-background focus:ring-2 focus:outline-none focus:ring-accent duration-100" %>
@@ -8,7 +8,7 @@
     <div>
       <%= form.label :question_type, "Question Type", class: "block font-medium text-foreground mb-1" %>
 
-      <%= form.select :question_type, Question::QUESTION_TYPES, {}, {
+      <%= form.select :question_type, Hiring::Question::QUESTION_TYPES, {}, {
             class: "w-full border border-input rounded-md px-4 py-2 bg-background focus:ring-2 focus:outline-none focus:ring-accent duration-100",
             data: { action: "change->toggle-visibility#check", "toggle-visibility-target": "select" }
           } %>

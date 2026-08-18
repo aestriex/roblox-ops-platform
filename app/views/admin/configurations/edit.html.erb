@@ -1,10 +1,50 @@
-<div class="max-w-lg space-y-6">
-  <h1 class="text-2xl font-bold text-foreground">Organization Settings</h1>
+<div class="mx-auto space-y-6">
+  <h1 class="text-2xl font-bold text-foreground">Organization Configuration</h1>
 
-  <%= form_with model: @configuration, url: admin_configurations_path, method: :patch, class: "space-y-4" do |form| %>
+  <%= form_with model: @configuration, url: admin_configurations_path, method: :patch, class: "space-y-6" do |form| %>
     <div>
       <%= form.label :org_name, "Organization Name", class: "block font-medium text-foreground mb-1" %>
       <%= form.text_field :org_name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+
+    <div class="space-y-4">
+      <p class="font-medium text-foreground">Modules</p>
+      <p class="text-sm text-muted-foreground -mt-2">Disable a module to hide it from the sidebar and block access to its pages.</p>
+
+      <%= hidden_field_tag "configuration[enabled_modules][]", "" %>
+      <div class="space-y-2">
+        <% Configuration::MODULES.each do |key, label| %>
+          <%= render_checkbox(
+            label: label,
+            name: "configuration[enabled_modules][]",
+            value: key,
+            checked: @configuration.module_enabled?(key)
+          ) %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <p class="font-medium text-foreground">External Links</p>
+      <p class="text-sm text-muted-foreground -mt-2">Add up to 3 links to show at the bottom of the sidebar (e.g. Discord, Roblox Group).</p>
+
+      <% 3.times do |i| %>
+        <% link = @configuration.external_links[i] || {} %>
+        <div class="grid grid-cols-3 gap-2 p-3 border border-border rounded-lg">
+          <div>
+            <%= label_tag "configuration[external_links][][label]", "Label", class: "block text-xs font-medium text-foreground mb-1" %>
+            <%= text_field_tag "configuration[external_links][][label]", link[:label], class: "w-full border border-input rounded-md px-2 py-1.5 text-sm bg-background" %>
+          </div>
+          <div>
+            <%= label_tag nil, "URL", class: "block text-xs font-medium text-foreground mb-1" %>
+            <%= url_field_tag "configuration[external_links][][url]", link[:url], class: "w-full border border-input rounded-md px-2 py-1.5 text-sm bg-background" %>
+          </div>
+          <div>
+            <%= label_tag nil, "Icon (Lucide name)", class: "block text-xs font-medium text-foreground mb-1" %>
+            <%= text_field_tag "configuration[external_links][][icon]", link[:icon], placeholder: "message-circle", class: "w-full border border-input rounded-md px-2 py-1.5 text-sm bg-background" %>
+          </div>
+        </div>
+      <% end %>
     </div>
 
     <%= render_button "Save", type: :submit %>

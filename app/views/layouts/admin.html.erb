@@ -19,64 +19,77 @@
 
 <body class="bg-background text-foreground transition-all duration-300 antialiased" data-controller="theme">
   <div class="flex h-screen">
-    <aside class="w-64 border-r border-border bg-muted/40 flex flex-col">
-      <div class="h-(--spacing-header) flex items-center px-4 border-b border-border">
-        <span class="font-semibold text-lg"><%= Configuration.instance.org_name %></span>
-      </div>
-
-      <nav class="flex-1 p-4 space-y-4">
-        <% visible_nav_sections.each do |group| %>
-          <div>
-            <% if group[:section] %>
-              <p class="px-3 text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-                <%= group[:section] %>
-              </p>
-            <% end %>
-
-            <% group[:items].each do |item| %>
-              <%= link_to send(item[:path]), class: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight hover:bg-accent hover:text-accent-foreground transition-all duration-300" do %>
-                <%= lucide_icon item[:icon], class: "w-4 h-4" %>
-                <%= item[:label] %>
-              <% end %>
-            <% end %>
-          </div>
-        <% end %>
-      </nav>
-
-      <div class="p-4 border-t border-border text-sm flex flex-row justify-between items-center">
-        <div class="flex items-center gap-2">
-          <%= image_tag current_user.display_avatar_url, class: "w-8 h-8 rounded-full" %>
-            <p class="text-foreground truncate">
-              <%= current_user.display_name %>
-            </p>
-        </div>
-        <div class="relative" data-controller="dropdown">
-          <button data-action="click->dropdown#toggle" class="p-1 rounded-md hover:bg-accent">
-            <%= lucide_icon "more-vertical", class: "w-5 h-5" %>
+      <aside class="w-64 border-r border-border bg-muted/40 flex flex-col">
+        <div class="h-header px-3 border-b border-border relative flex items-center" data-controller="dropdown">
+          <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2 p-2 rounded-md cursor-pointer group">
+            <%= image_tag current_user.display_avatar_url, class: "w-8 h-8 rounded-sm" %>
+            <div class="flex-1 text-left min-w-0">
+              <p class="text-sm font-medium text-foreground truncate"><%= current_user.display_name %></p>
+              <p class="text-xs text-muted-foreground truncate"><%= current_user.highest_role&.name || "No Role" %></p>
+            </div>
+            <div class="flex flex-col items-center w-4 shrink-0 text-muted-foreground">
+              <%= lucide_icon "chevron-up", class: "w-3.5 h-3.5 -mb-1 transition-transform duration-150 group-hover:-translate-y-0.5" %>
+              <%= lucide_icon "chevron-down", class: "w-3.5 h-3.5 -mt-1 transition-transform duration-150 group-hover:translate-y-0.5" %>
+            </div>
           </button>
 
-          <div data-dropdown-target="menu"
-            class="hidden absolute bottom-full mb-2 left-0 w-48 bg-popover border border-border rounded-md shadow-md p-1 bg-background">
-            <button data-action="click->theme#toggle"
-              class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent text-left">
-              <%= lucide_icon "sun-moon", class: "w-4 h-4" %>
-              Switch theme
+          <div data-dropdown-target="menu" class="hidden absolute left-1/2 -translate-x-1/2 top-[85%] z-50 mt-1 w-56 bg-popover bg-background border border-border rounded-md shadow-md p-1">
+            <button data-action="click->theme#toggle" class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent text-left cursor-pointer">
+              <%= lucide_icon "sun-moon", class: "w-4 h-4" %> Switch theme
             </button>
+
             <% if current_user.can?("admin.configurations.edit") %>
-                <%= link_to edit_admin_configurations_path, class: "w-full flex hover:bg-accent items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
-                  <%= lucide_icon "settings", class: "w-4 h-4" %>
-                  Configuration
-                <% end %>
+              <%= link_to edit_admin_configurations_path, class: "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left hover:bg-accent" do %>
+                <%= lucide_icon "settings", class: "w-4 h-4" %> Configuration
+              <% end %>
             <% end %>
-            <%= render_separator class: "mt-1 mb-1" %>
+
+            <%= render_separator class: "my-1" %>
+
             <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-destructive hover:bg-destructive/10 hover:text-destructive-foreground flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
-              <%= lucide_icon "log-out", class: "w-4 h-4" %>
-              Logout
+              <%= lucide_icon "log-out", class: "w-4 h-4" %> Logout
             <% end %>
           </div>
         </div>
-      </div>
-    </aside>
+
+        <nav class="flex-1 p-4 space-y-4 overflow-y-auto">
+          <% visible_nav_sections.each do |group| %>
+            <%= tag.div class: "group", data: (group[:section] ? { controller: "ui--collapsible" } : {}) do %>
+              <% if group[:section] %>
+                <button type="button" data-action="click->ui--collapsible#toggle" class="w-full flex items-center gap-1 px-3 mb-1 cursor-pointer">
+                  <%= lucide_icon "chevron-down", class: "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 group-has-[[data-ui--collapsible-target].hidden]:-rotate-90" %>
+                  <p class="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    <%= group[:section] %>
+                  </p>
+                </button>
+              <% end %>
+
+              <div data-ui--collapsible-target="item" class="space-y-1">
+                <% group[:items].each do |item| %>
+                  <% active = current_page?(send(item[:path])) %>
+                  <%= link_to send(item[:path]), class: tw("flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium tracking-tight transition-all duration-300", active ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground") do %>
+                    <%= lucide_icon item[:icon], class: "w-4 h-4" %>
+                    <span class="flex-1 truncate"><%= item[:label] %></span>
+                    <% if item[:managerial] %>
+                      <%= lucide_icon "circuit-board", class: "w-4 h-4 text-muted-foreground shrink-0" %>
+                    <% end %>
+                  <% end %>
+                <% end %>
+              </div>
+            <% end %>
+          <% end %>
+        </nav>
+
+        <div class="p-3 border-t border-border space-y-1">
+          <% Configuration.instance.external_links.each do |link| %>
+            <%= link_to link[:url], target: "_blank", rel: "noopener", class: "flex items-center gap-2 px-2 py-1.5 text-sm rounded-md hover:bg-accent text-muted-foreground" do %>
+              <%= lucide_icon link[:icon].presence || "link", class: "w-4 h-4 shrink-0" %>
+              <span class="flex-1 text-left truncate"><%= link[:label] %></span>
+              <%= lucide_icon "external-link", class: "w-4 h-4 shrink-0" %>
+            <% end %>
+          <% end %>
+        </div>
+      </aside>
 
     <div class="flex-1 flex flex-col overflow-hidden">
       <%= render "shared/breadcrumbs" , breadcrumbs: auto_breadcrumbs %>

@@ -30,15 +30,15 @@ module BreadcrumbsHelper
 
     case resource_name
       when "job_postings"
-        JobPosting.find_by(id: uuid)&.title
+        Hiring::JobPosting.find_by(id: uuid)&.title
       when "sections"
-        Section.find_by(id: uuid)&.title
+        Hiring::Section.find_by(id: uuid)&.title
       when "roles"
         Role.find_by(id: uuid)&.name
       when "users"
         User.find_by(id: uuid)&.display_name
       when "posting_applications"
-        PostingApplication.find_by(id: uuid)&.user&.display_name
+        Hiring::PostingApplication.find_by(id: uuid)&.user&.display_name
       when "projects"
         Workspace::Project.find_by(id: uuid)&.name
       when "features"
