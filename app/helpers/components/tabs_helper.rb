@@ -23,7 +23,7 @@ module Components::TabsHelper
 
   def tab_panel(**options, &block)
     options[:state] = options[:active] ? "active" : "inactive"
-    content_for :panel, capture(&block), flush: true
-    render("components/ui/tabs/panel", options:)
+    content = capture(&block)
+    render("components/ui/tabs/panel", options: options, content: content)
   end
 end

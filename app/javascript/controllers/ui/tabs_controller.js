@@ -10,7 +10,7 @@ export default class extends Controller {
     this.activeTabClasses = (this.data.get("activeTab") || "active").split(" ");
     this.inactiveTabClasses = (this.data.get("inactiveTab") || "inactive").split(" ");
     if (this.anchor) this.index = this.tabTargets.findIndex((tab) => tab.id === this.anchor);
-    // this.showTab();
+    this.showTab();
   }
 
   change(event) {
