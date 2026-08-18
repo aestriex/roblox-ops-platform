@@ -1,0 +1,22 @@
+<div class="space-y-4">
+  <%= render_filter_bar(Workspace::Deliverable, context: project, current_params: params.permit(:milestone_id, :feature_id).to_h) %>
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Name" %>
+      <%= table_header "Feature" %>
+      <%= table_header "Milestone" %>
+      <%= table_header "Work Items" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% deliverables.each do |deliverable| %>
+        <%= table_row do %>
+          <%= table_column deliverable.name %>
+          <%= table_column deliverable.feature.name %>
+          <%= table_column deliverable.milestone.name %>
+          <%= table_column deliverable.work_items.count %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

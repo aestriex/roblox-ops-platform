@@ -1,0 +1,38 @@
+<div data-controller="ui--filter-bar" class="flex items-center gap-2 flex-wrap">
+  <%= render_popover do %>
+    <% popover_trigger do %>
+      <%= render_button variant: :outline do %>
+        <%= lucide_icon "list-filter", class: "w-4 h-4 mr-2" %> Filter
+      <% end %>
+    <% end %>
+
+    <% popover_content class: "w-56 p-1 bg-background" do %>
+      <div data-ui--filter-bar-target="fieldList">
+        <% model_class.filterable_fields.each do |field, config| %>
+          <button type="button" data-action="click->ui--filter-bar#showValues" data-field="<%= field %>" class="w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent cursor-pointer">
+            <%= config[:label] %>
+          </button>
+        <% end %>
+      </div>
+
+      <% model_class.filterable_fields.each do |field, config| %>
+        <div data-ui--filter-bar-target="valueList" data-field="<%= field %>" class="hidden">
+          <button type="button" data-action="click->ui--filter-bar#showFields" class="flex items-center gap-1 w-full text-left px-2 py-1.5 text-xs text-muted-foreground hover:bg-accent rounded-sm cursor-pointer">
+            <%= lucide_icon "chevron-left", class: "w-3 h-3" %> Back
+          </button>
+          <% config[:options].call(context).each do |label, value| %>
+            <%= link_to label, "#{request.path}?#{current_params.merge(field => value).to_query}", class: "block px-2 py-1.5 text-sm rounded-sm hover:bg-accent" %>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+  <% active_filters.each do |field, value_label| %>
+    <div class="flex items-center gap-1 px-2 py-1 rounded-md bg-muted text-sm text-foreground">
+      <span><%= model_class.filterable_fields[field][:label] %>: <%= value_label %></span>
+      <%= link_to "#{request.path}?#{current_params.except(field).to_query}", class: "text-muted-foreground hover:text-foreground" do %>
+        <%= lucide_icon "x", class: "w-3 h-3" %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

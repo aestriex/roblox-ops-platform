@@ -1,0 +1,51 @@
+<div class="space-y-4">
+  <div class="flex justify-end">
+    <%= render_dialog do %>
+      <% dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Feature
+        <% end %>
+      <% end %>
+
+      <% dialog_content do %>
+        <% new_feature = Workspace::Feature.new(project: project) %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">New Feature</h2>
+        <%= turbo_frame_tag new_feature.dialog_form_id do %>
+          <%= render "workspace/features/form", project: project, feature: new_feature %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render_table do %>
+    <%= table_head do %>
+      <%= table_header "Name" %>
+      <%= table_header "Deliverables" %>
+      <%= table_header "" %>
+    <% end %>
+
+    <%= table_body do %>
+      <% project.features.each do |feature| %>
+        <%= table_row do %>
+          <%= table_column feature.name %>
+          <%= table_column feature.deliverables.count %>
+          <%= table_column class: "text-right" do %>
+            <%= render_dialog do %>
+              <% dialog_trigger do %>
+                <%= render_button variant: :ghost do %>
+                  <%= lucide_icon "pencil", class: "w-4 h-4" %>
+                <% end %>
+              <% end %>
+              <% dialog_content do %>
+                <h2 class="text-lg font-semibold text-foreground mb-6">Edit <%= feature.name %></h2>
+                <%= turbo_frame_tag feature.dialog_form_id do %>
+                  <%= render "workspace/features/form", project: project, feature: feature %>
+                <% end %>
+              <% end %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -8,6 +8,10 @@ module Workspace
 
     validates :name, presence: true
 
+    include Filterable
+    filterable_by :milestone_id, label: "Milestone", options: ->(project) { project.milestones.pluck(:name, :id) }
+    filterable_by :feature_id, label: "Feature", options: ->(project) { project.features.pluck(:name, :id) }
+
     def dialog_form_id
       persisted? ? "deliverable_dialog_form_#{id}" : "deliverable_dialog_form_new"
     end

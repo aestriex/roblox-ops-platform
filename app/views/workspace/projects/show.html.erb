@@ -1,58 +1,28 @@
-<div class="max-w-5xl mx-auto space-y-8">
+<div class="mx-auto space-y-8">
   <div>
     <h1 class="text-2xl font-bold text-foreground"><%= @project.name %></h1>
     <p class="text-sm text-muted-foreground"><%= @project.description %></p>
   </div>
 
-  <div class="grid grid-cols-2 gap-8">
-    <div class="space-y-4">
-      <h2 class="text-lg font-semibold text-foreground">Milestones</h2>
-      <div id="milestones">
-        <% @project.milestones.each do |milestone| %>
-          <%= render "workspace/milestones/milestone", milestone: milestone, project: @project %>
-        <% end %>
-      </div>
-      <%= render_dialog do %>
-        <% dialog_trigger do %>
-          <%= render_button variant: :outline do %>
-            <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Milestone
-          <% end %>
-        <% end %>
+  <%= render_tabs do %>
+    <% tab_list do %>
+      <%= tab "Milestones", active: true, icon: "flag" %>
+      <%= tab "Features", icon: "layers" %>
+      <%= tab "Deliverables", icon: "package" %>
+    <% end %>
 
-        <% dialog_content do %>
-          <% new_milestone = Workspace::Milestone.new(project: @project) %>
-          <h2 class="text-lg font-semibold text-foreground mb-6">New Milestone</h2>
-
-          <%= turbo_frame_tag new_milestone.dialog_form_id do %>
-            <%= render "workspace/milestones/form", project: @project, milestone: new_milestone %>
-          <% end %>
-        <% end %>
+    <% tab_panels do %>
+      <%= tab_panel active: true do %>
+        <%= render "workspace/milestones/table", project: @project %>
       <% end %>
-    </div>
 
-    <div class="space-y-4">
-      <h2 class="text-lg font-semibold text-foreground">Features</h2>
-      <div id="features">
-        <% @project.features.each do |feature| %>
-          <%= render "workspace/features/feature", feature: feature, project: @project %>
-        <% end %>
-      </div>
-      <%= render_dialog do %>
-        <% dialog_trigger do %>
-          <%= render_button variant: :outline do %>
-            <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Feature
-          <% end %>
-        <% end %>
-
-        <% dialog_content do %>
-          <% new_feature = Workspace::Feature.new(project: @project) %>
-          <h2 class="text-lg font-semibold text-foreground mb-6">New Feature</h2>
-
-          <%= turbo_frame_tag new_feature.dialog_form_id do %>
-            <%= render "workspace/features/form", project: @project, feature: new_feature %>
-          <% end %>
-        <% end %>
+      <%= tab_panel do %>
+        <%= render "workspace/features/table", project: @project %>
       <% end %>
-    </div>
-  </div>
+
+      <%= tab_panel do %>
+        <%= turbo_frame_tag "deliverables_table", src: workspace_project_deliverables_path(@project) %>
+      <% end %>
+    <% end %>
+  <% end %>
 </div>

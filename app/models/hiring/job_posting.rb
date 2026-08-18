@@ -14,6 +14,9 @@ module Hiring
 
     before_create :generate_slug
 
+    include Filterable
+    filterable_by :status, label: "Status", options: ->(*) { JobPosting::STATUSES.map { |s| [s.titleize, s] } }
+
     def status_badge_classes
       case status
       when "open" then "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"

@@ -4,7 +4,7 @@ module Workspace
 
     before_action :authenticate_user!
     before_action :set_project
-    before_action :set_feature
+    before_action :set_feature, except: [:index]
 
     permission :show, desc: "View a workspace deliverable", auto_assign: ["Super Admin"]
     permission :new, desc: "Add a workspace deliverable", auto_assign: ["Super Admin"]
@@ -12,6 +12,10 @@ module Workspace
     permission :edit, desc: "Stage workspace deliverable edits", auto_assign: ["Manager", "Super Admin"]
     permission :update, desc: "Edit workspace deliverables", auto_assign: ["Manager", "Super Admin"]
     permission :destroy, desc: "Delete workspace deliverables", auto_assign: ["Super Admin"]
+
+    def index
+      @deliverables = Workspace::Deliverable.joins(:feature).where(feature: { project_id: @project.id }).apply_filters(filter_params)
+    end
 
     def show
       @deliverable = @feature.deliverables.find(params[:id])
@@ -61,6 +65,10 @@ module Workspace
 
     def deliverable_params
       params.require(:deliverable).permit(:name, :description, :milestone_id)
+    end
+
+    def filter_params
+      params.permit(:milestone_id, :feature_id)
     end
 
     def set_project
