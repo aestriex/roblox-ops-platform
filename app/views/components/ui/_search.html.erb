@@ -1,0 +1,18 @@
+<div data-controller="ui--search" data-ui--search-pattern-value="<%= options[:pattern] %>">
+  <%= render_card class: "w-full" do %>
+    <div class="flex items-center">
+      <%= content_for :search_icon %>
+      <%= render_input name: "search", placeholder: "Search items...", variant: :borderless, class: input_class, data: {"ui--search-target": "source", action: "input->ui--search#search"} %>
+    </div>
+    <%= render_separator %>
+    <div class="<%= options[:class] %>">
+      <%= content_tag :div, role: "group" do %>
+        <% items.each do |item| %>
+          <div data-ui--search-target="item">
+            <%= search_list_item(value: item[:value], name: item[:name], selected: item[:selected], avatar: item[:avatar]) %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

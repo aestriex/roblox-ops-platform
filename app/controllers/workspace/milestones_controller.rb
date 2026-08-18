@@ -13,7 +13,7 @@ module Workspace
     permission :destroy, desc: "Delete project milestones", auto_assign: ["Super Admin"]
 
     def index
-      @milestones = @project.milestones
+      @milestones = @project.milestones.apply_filters(filter_params)
     end
 
     def new
@@ -60,6 +60,10 @@ module Workspace
 
     def milestone_params
       params.require(:milestone).permit(:name, :description, :target_date)
+    end
+
+    def filter_params
+      params.permit(:locked)
     end
 
     def set_project

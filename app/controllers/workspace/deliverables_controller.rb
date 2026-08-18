@@ -4,7 +4,7 @@ module Workspace
 
     before_action :authenticate_user!
     before_action :set_project
-    before_action :set_feature, except: [:index]
+    before_action :set_feature, except: [:index, :show]
 
     permission :show, desc: "View a workspace deliverable", auto_assign: ["Super Admin"]
     permission :new, desc: "Add a workspace deliverable", auto_assign: ["Super Admin"]
@@ -18,7 +18,7 @@ module Workspace
     end
 
     def show
-      @deliverable = @feature.deliverables.find(params[:id])
+      @deliverable = @project.deliverables.find(params[:id])
     end
 
     def new

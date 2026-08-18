@@ -13,11 +13,11 @@
 
     <% tab_panels do %>
       <%= tab_panel active: true do %>
-        <%= render "workspace/milestones/table", project: @project %>
+        <%= turbo_frame_tag "milestones_table", src: workspace_project_milestones_path(@project) %>
       <% end %>
 
       <%= tab_panel do %>
-        <%= render "workspace/features/table", project: @project %>
+        <%= turbo_frame_tag "features_table", src: workspace_project_features_path(@project) %>
       <% end %>
 
       <%= tab_panel do %>

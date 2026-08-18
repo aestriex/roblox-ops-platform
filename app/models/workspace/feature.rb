@@ -10,6 +10,11 @@ module Workspace
 
     validates :name, presence: true
 
+    include Filterable
+    filterable_by :milestone_id, label: "Milestone",
+      options: ->(project) { project.milestones.pluck(:name, :id) },
+      scope: ->(relation, value) { relation.joins(:deliverables).where(deliverables: { milestone_id: value }).distinct }
+
     def dialog_form_id
       persisted? ? "feature_dialog_form_#{id}" : "feature_dialog_form_new"
     end

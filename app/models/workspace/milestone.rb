@@ -9,6 +9,9 @@ module Workspace
     validates :name, presence: true
     validates :target_date, presence: true
 
+    include Filterable
+    filterable_by :locked, label: "Status", options: ->(*) { [["Locked", true], ["Unlocked", false]] }
+
     def dialog_form_id
       persisted? ? "milestone_dialog_form_#{id}" : "milestone_dialog_form_new"
     end

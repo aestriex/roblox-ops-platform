@@ -1,5 +1,14 @@
-<div class="space-y-4">
-  <div class="flex justify-end">
+<div class="space-y-4" data-controller="ui--search" data-ui--search-pattern-value="{input}">
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div class="flex items-center gap-2 flex-wrap">
+      <%= render_filter_bar(Workspace::Milestone, context: project, current_params: params.permit(:locked).to_h) %>
+
+      <div class="relative">
+        <%= lucide_icon "search", class: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" %>
+        <%= render_input name: "search", placeholder: "Search milestones...", class: "max-w-xs pl-9", data: { "ui--search-target": "source", action: "input->ui--search#search" } %>
+      </div>
+    </div>
+
     <%= render_dialog do %>
       <% dialog_trigger do %>
         <%= render_button variant: :outline do %>
@@ -26,19 +35,19 @@
     <% end %>
 
     <%= table_body do %>
-      <% project.milestones.each do |milestone| %>
-        <%= table_row do %>
+      <% milestones.each do |milestone| %>
+        <%= table_row data: { "ui--search-target": "item" } do %>
           <%= table_column milestone.name %>
           <%= table_column milestone.target_date&.strftime("%b %-d, %Y") || "—" %>
           <%= table_column do %>
             <% if milestone.locked? %>
-              <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground">Locked</span>
+              <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">Locked</span>
             <% end %>
           <% end %>
           <%= table_column class: "text-right" do %>
             <%= render_dialog do %>
               <% dialog_trigger do %>
-                <%= render_button variant: :ghost do %>
+                <%= render_button variant: :ghost, class: "h-5 w-5 p-0" do %>
                   <%= lucide_icon "pencil", class: "w-4 h-4" %>
                 <% end %>
               <% end %>

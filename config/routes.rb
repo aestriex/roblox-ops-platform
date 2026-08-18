@@ -30,11 +30,16 @@ Rails.application.routes.draw do
   namespace :workspace do
     resources :projects do
       resources :milestones
-      resources :deliverables, only: [:index]
-      resources :features, except: [:index] do
+      resources :deliverables, only: [:index, :show]
+      resources :work_items, only: [:show]
+      resources :features do
         resources :deliverables, except: [:index] do
           resources :work_items, except: [:index] do
             resources :submissions, only: [:create, :destroy]
+            patch :update_status, on: :member
+            patch :update_description, on: :member
+            patch :update_due_date, on: :member
+            patch :update_assignee, on: :member
           end
         end
       end

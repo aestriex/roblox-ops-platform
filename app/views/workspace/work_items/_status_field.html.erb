@@ -1,0 +1,29 @@
+<div id="work_item_status_<%= work_item.id %>" data-controller="ui--popover" class="w-fit select-none">
+  <div class="popover-trigger" data-ui--popover-target="trigger" data-action="dblclick->ui--popover#toggle">
+    <span class="group inline-flex items-center gap-1 px-2 py-1 rounded-md border border-transparent hover:border-input cursor-pointer w-fit -ml-4">
+      <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
+        <%= work_item.status.titleize %>
+      </span>
+      <%= lucide_icon "chevron-down", class: "w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" %>
+    </span>
+  </div>
+
+  <div class="popover-wrapper select-none" data-ui--popover-target="wrapper">
+    <div data-side="bottom" data-controller="ui--transition" data-ui--popover-target="content" data-state="closed" role="dialog" class="hidden z-50 rounded-md bg-background border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none w-40" tabindex="-1">
+      <p class="text-muted-foreground capitalize text-xs p-2">Update Status</p>
+      <% Workspace::WorkItem::STATUSES.each do |status| %>
+          <%= button_to status.titleize,
+            update_status_workspace_project_feature_deliverable_work_item_path(
+              work_item.deliverable.feature.project,
+              work_item.deliverable.feature,
+              work_item.deliverable,
+              work_item,
+              status: status
+            ),
+            method: :patch,
+            form: { data: { turbo_frame: "sheet_content_frame" } },
+            class: "w-full text-left px-2 py-1.5 text-sm rounded-sm hover:bg-accent #{"font-medium" if status == work_item.status}" %>
+      <% end %>
+    </div>
+  </div>
+</div>
