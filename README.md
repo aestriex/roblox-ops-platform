@@ -63,7 +63,7 @@ This eager-loads the app and syncs Permission/Role records in the database to ma
 Org name, module toggles, and external footer links (Discord, Roblox Group, etc.) are managed via Configuration, editable in-app by Super Admins — no code changes or redeploys needed to rebrand for a different studio.
 
 ## License
-Licensed under the Apache License 2.0 — see LICENSE.
+Licensed under AGPL-3.0 — see LICENSE.
 
 ## Status
 This is an actively evolving internal tool. Automated test coverage is currently minimal; the project has been built and verified through extensive manual testing. Contributions/issues are welcome, but expect breaking changes as the application continues to evolve.
