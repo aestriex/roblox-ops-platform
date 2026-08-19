@@ -2,7 +2,7 @@
 
 import { Controller } from "@hotwired/stimulus";
 import IsoDate from "utils/iso_date";
-import { useClickOutside } from "stimulus-use";
+import { useClickOutside } from "https://ga.jspm.io/npm:stimulus-use@0.51.3/dist/index.js";
 
 // All dates are local, not UTC.
 export default class UIDatePickerController extends Controller {
@@ -54,12 +54,17 @@ export default class UIDatePickerController extends Controller {
   connect() {
     useClickOutside(this);
     if (!this.hasHiddenTarget) this.addHiddenInput();
-    this.addInputAction();
+    if (this.isEditableInput(this.inputTarget)) this.addInputAction();
     this.addToggleAction();
     this.setToggleAriaLabel();
     this.dateValue = this.validate(this.inputTarget.textContent)
       ? ""
       : this.inputTarget.textContent;
+    this.dateValueChanged(this.dateValue);
+  }
+
+  isEditableInput(element) {
+    return element instanceof HTMLInputElement || element instanceof HTMLTextAreaElement;
   }
 
   disconnect() {
@@ -70,8 +75,7 @@ export default class UIDatePickerController extends Controller {
     if (!this.hasHiddenTarget) return;
     const dispatchChangeEvent = value != this.hiddenTarget.value;
     this.hiddenTarget.value = value;
-    // this.inputTarget.value = this.format(value)
-    this.inputTarget.textContent = value || "Pick a date";
+    this.inputTarget.textContent = value ? this.format(value) : this.text("chooseDate");
     // Trigger change event on input when user selects date from picker.
     // http://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event
     if (dispatchChangeEvent) this.inputTarget.dispatchEvent(new Event("change"));

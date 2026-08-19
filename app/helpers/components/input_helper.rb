@@ -5,7 +5,7 @@ module Components::InputHelper
     when :borderless
       " border-0 focus-visible:outline-none focus-visible:shadow-none focus-visible:ring-transparent"
     else
-      "shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:border-muted"
+      "shadow-sm"
     end
     options[:class] = tw(options[:class])
 
