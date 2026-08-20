@@ -7,7 +7,7 @@ module Workspace
     has_many :submissions, dependent: :destroy
 
     include Filterable
-    filterable_by :status, label: "Status", options: ->(*) { STATUSES.map { |s| [s.titleize, s] } }
+    filterable_by :status, label: "Status", options: ->(*) { STATUSES.map { |s| [ s.titleize, s ] } }
     filterable_by :assignee_id, label: "Assignee", options: ->(project) { Personnel::Person.joins(:assigned_work_items).where(assigned_work_items: { deliverable: project.deliverables }).distinct.pluck(:first_name, :id) }
     filterable_by :feature_id, label: "Feature",
       options: ->(project) { project.features.pluck(:name, :id) },

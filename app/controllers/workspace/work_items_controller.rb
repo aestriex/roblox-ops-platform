@@ -7,7 +7,7 @@ module Workspace
     before_action :set_feature, if: -> { params[:feature_id].present? }
     before_action :set_deliverable, if: -> { params[:deliverable_id].present? }
 
-    permission :index, desc: "View all workspace work items", auto_assign: ["Staff", "Manager", "Super Admin"]
+    permission :index, desc: "View all workspace work items", auto_assign: [ "Staff", "Manager", "Super Admin" ]
     permission :show, desc: "View a workspace work item", auto_assign: [ "Super Admin" ]
     permission :new, desc: "Add a workspace work item", auto_assign: [ "Super Admin" ]
     permission :create, desc: "Create new workspace work items", auto_assign: [ "Super Admin" ]
