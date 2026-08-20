@@ -9,6 +9,7 @@
       <%= tab "Milestones", active: true, icon: "flag" %>
       <%= tab "Features", icon: "layers" %>
       <%= tab "Deliverables", icon: "package" %>
+      <%= tab "Work Items", icon: "list-todo" %>
     <% end %>
 
     <% tab_panels do %>
@@ -23,6 +24,10 @@
       <%= tab_panel do %>
         <%= turbo_frame_tag "deliverables_table", src: workspace_project_deliverables_path(@project) %>
       <% end %>
+
+      <%= tab_panel do %>
+          <%= turbo_frame_tag "work_items_table", src: workspace_project_work_items_path(@project) %>
+        <% end %>
     <% end %>
   <% end %>
 </div>

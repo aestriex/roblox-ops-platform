@@ -1,11 +1,29 @@
 <div class="space-y-4" data-controller="ui--search" data-ui--search-pattern-value="{input}">
-  <div class="flex items-center gap-2 flex-wrap">
-    <%= render_filter_bar(Workspace::Deliverable, context: project, current_params: params.permit(:milestone_id, :feature_id).to_h) %>
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div class="flex items-center gap-2 flex-wrap">
+      <%= render_filter_bar(Workspace::Deliverable, context: project, current_params: params.permit(:milestone_id, :feature_id).to_h) %>
 
-    <div class="relative">
-      <%= lucide_icon "search", class: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" %>
-      <%= render_input name: "search", placeholder: "Search deliverables...", class: "max-w-xs pl-9", data: { "ui--search-target": "source", action: "input->ui--search#search" } %>
+      <div class="relative">
+        <%= lucide_icon "search", class: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" %>
+        <%= render_input name: "search", placeholder: "Search deliverables...", class: "max-w-xs pl-9", data: { "ui--search-target": "source", action: "input->ui--search#search" } %>
+      </div>
     </div>
+
+    <% new_deliverable = Workspace::Deliverable.new %>
+    <%= render_dialog do %>
+      <% dialog_trigger do %>
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> New Deliverable
+        <% end %>
+      <% end %>
+
+      <% dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">New Deliverable</h2>
+        <%= turbo_frame_tag new_deliverable.dialog_form_id do %>
+          <%= render "workspace/deliverables/form", project: project, feature: nil, deliverable: new_deliverable, features: project.features %>
+        <% end %>
+      <% end %>
+    <% end %>
   </div>
 
   <%= render_sheet(id: "deliverable_sheet", direction: "right", width: "w-1/2") %>

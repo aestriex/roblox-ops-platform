@@ -1,0 +1,39 @@
+<div data-controller="ui--kanban" class="grid grid-flow-col auto-cols-[280px] gap-4 overflow-x-auto pb-4">
+  <% Workspace::WorkItem::STATUSES.each do |status| %>
+    <div class="flex flex-col gap-2 bg-muted/40 rounded-lg p-2">
+      <p class="text-xs font-semibold text-muted-foreground uppercase px-2 py-1">
+        <%= status.titleize %> (<span data-ui--kanban-target="count" data-status="<%= status %>"><%= work_items.select { |wi| wi.status == status }.size %></span>)
+      </p>
+
+      <div class="flex flex-col gap-2 min-h-[200px]" data-ui--kanban-target="column" data-status="<%= status %>">
+        <% work_items.select { |wi| wi.status == status }.each do |work_item| %>
+          <div
+            data-id="<%= work_item.id %>"
+            data-url="<%= update_status_workspace_project_feature_deliverable_work_item_path(project, work_item.deliverable.feature, work_item.deliverable, work_item) %>"
+            data-controller="ui--sheet-trigger"
+            data-ui--sheet-trigger-outlet-value="#work_item_sheet"
+            data-ui--sheet-trigger-url-value="<%= workspace_project_work_item_path(project, work_item) %>"
+            data-ui--sheet-trigger-title-value="<%= work_item.title %>"
+            data-action="click->ui--sheet-trigger#open"
+            data-ui--search-target="item"
+            class="relative bg-background border border-border rounded-md p-3 text-sm cursor-grab hover:border-primary/50 transition-colors duration-100">
+
+            <% if work_item.blocked? %>
+              <div class="absolute inset-0 bg-destructive/10 border border-destructive/30 rounded-md pointer-events-none"></div>
+            <% end %>
+
+            <p class="font-medium text-foreground relative"><%= work_item.title %></p>
+            <p class="text-xs text-muted-foreground mt-1 relative"><%= work_item.deliverable.name %></p>
+
+            <div class="flex items-center justify-between mt-2 relative">
+              <span class="text-xs text-muted-foreground"><%= work_item.assignee&.full_name || "Unassigned" %></span>
+              <% if work_item.due_date %>
+                <span class="text-xs text-muted-foreground"><%= work_item.due_date.strftime("%b %-d") %></span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

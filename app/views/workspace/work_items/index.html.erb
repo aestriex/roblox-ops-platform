@@ -1,0 +1,80 @@
+<%= turbo_frame_tag "work_items_table" do %>
+  <div data-controller="ui--view-toggle ui--search" data-ui--search-pattern-value="{input}">
+    <div class="flex items-center justify-between gap-2 flex-wrap mb-4">
+      <div class="flex items-center gap-2 flex-wrap">
+        <%= render_filter_bar(Workspace::WorkItem, context: @project, current_params: params.permit(:status, :assignee_id, :feature_id, :milestone_id).to_h) %>
+
+        <div class="relative">
+          <%= lucide_icon "search", class: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" %>
+          <%= render_input name: "search", placeholder: "Search work items...", class: "max-w-xs pl-9", data: { "ui--search-target": "source", action: "input->ui--search#search" } %>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <div class="flex items-center gap-1 border border-border rounded-md p-0.5">
+          <button type="button" data-action="click->ui--view-toggle#showTable" data-ui--view-toggle-target="tableIcon" class="p-1.5 rounded-sm bg-accent">
+            <%= lucide_icon "table", class: "w-4 h-4" %>
+          </button>
+          <button type="button" data-action="click->ui--view-toggle#showKanban" data-ui--view-toggle-target="kanbanIcon" class="p-1.5 rounded-sm">
+            <%= lucide_icon "columns-3", class: "w-4 h-4" %>
+          </button>
+        </div>
+
+        <% new_work_item = Workspace::WorkItem.new %>
+        <%= render_dialog do %>
+          <% dialog_trigger do %>
+            <%= render_button variant: :outline do %>
+              <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> New Work Item
+            <% end %>
+          <% end %>
+
+          <% dialog_content do %>
+            <h2 class="text-lg font-semibold text-foreground mb-6">New Work Item</h2>
+            <%= turbo_frame_tag new_work_item.dialog_form_id do %>
+              <%= render "workspace/work_items/form", project: @project, feature: nil, deliverable: nil, work_item: new_work_item, assignees: Personnel::Person.all, deliverables: @project.deliverables.includes(:feature) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <%= render_sheet(id: "work_item_sheet", direction: "right", width: "w-1/2") %>
+
+    <div data-ui--view-toggle-target="table">
+      <%= render_table do %>
+        <%= table_head do %>
+          <%= table_header "Title" %>
+          <%= table_header "Deliverable" %>
+          <%= table_header "Status" %>
+          <%= table_header "Assignee" %>
+          <%= table_header "Due Date" %>
+        <% end %>
+
+        <%= table_body do %>
+          <% @work_items.each do |work_item| %>
+            <%= table_row data: {
+              controller: "ui--sheet-trigger",
+              "ui--sheet-trigger-outlet-value": "#work_item_sheet",
+              "ui--sheet-trigger-url-value": workspace_project_work_item_path(@project, work_item),
+              "ui--sheet-trigger-title-value": work_item.title,
+              action: "click->ui--sheet-trigger#open",
+              "ui--search-target": "item"
+            } do %>
+              <%= table_column work_item.title %>
+              <%= table_column work_item.deliverable.name %>
+              <%= table_column do %>
+                <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"><%= work_item.status.titleize %></span>
+              <% end %>
+              <%= table_column work_item.assignee&.full_name || "Unassigned" %>
+              <%= table_column work_item.due_date&.strftime("%b %-d, %Y") || "—" %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div data-ui--view-toggle-target="kanban" class="hidden">
+      <%= render "workspace/work_items/kanban", project: @project, work_items: @work_items %>
+    </div>
+  </div>
+<% end %>

@@ -1,9 +1,23 @@
-<%= form_with model: deliverable, url: deliverable.persisted? ? workspace_project_feature_deliverable_path(project, feature, deliverable) : workspace_project_feature_deliverables_path(project, feature), scope: :deliverable, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+<% form_url = if deliverable.persisted?
+  workspace_project_feature_deliverable_path(project, feature, deliverable)
+elsif feature
+  workspace_project_feature_deliverables_path(project, feature)
+else
+  workspace_project_deliverables_path(project)
+end %>
+<%= form_with model: deliverable, url: form_url, scope: :deliverable, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
   <% if deliverable.errors.any? %>
     <div class="text-sm text-destructive space-y-1">
       <% deliverable.errors.full_messages.each do |msg| %>
         <p><%= msg %></p>
       <% end %>
+    </div>
+  <% end %>
+
+  <% if local_assigns[:features].present? %>
+    <div>
+      <%= form.label :feature_id, "Feature", class: "block font-medium text-foreground mb-1" %>
+      <%= form.collection_select :feature_id, features, :id, :name, { prompt: "Select a feature" }, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
     </div>
   <% end %>
 

@@ -30,8 +30,8 @@ Rails.application.routes.draw do
   namespace :workspace do
     resources :projects do
       resources :milestones
-      resources :deliverables, only: [ :index, :show ]
-      resources :work_items, only: [ :show ]
+      resources :deliverables, only: [ :index, :show, :new, :create ]
+      resources :work_items, only: [ :index, :show, :new, :create ]
       resources :features do
         resources :deliverables, except: [ :index ] do
           resources :work_items, except: [ :index ] do

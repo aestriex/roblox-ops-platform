@@ -4,7 +4,7 @@ module Workspace
 
     before_action :authenticate_user!
     before_action :set_project
-    before_action :set_feature, except: [ :index, :show ]
+    before_action :set_feature, if: -> { params[:feature_id].present? }
 
     permission :show, desc: "View a workspace deliverable", auto_assign: [ "Super Admin" ]
     permission :new, desc: "Add a workspace deliverable", auto_assign: [ "Super Admin" ]
@@ -22,17 +22,20 @@ module Workspace
     end
 
     def new
-      @deliverable = @feature.deliverables.new
+      @deliverable = @feature ? @feature.deliverables.new : Workspace::Deliverable.new
+      @features = @project.features unless @feature
     end
 
     def create
+      @feature ||= @project.features.find(deliverable_params[:feature_id])
       @deliverable = @feature.deliverables.new(deliverable_params)
 
       if @deliverable.save
-        redirect_to workspace_project_feature_deliverable_path(@project, @feature, @deliverable), notice: "Deliverable created successfully."
+        redirect_to workspace_project_deliverable_path(@project, @deliverable), notice: "Deliverable created successfully."
       else
+        @features = @project.features
         render turbo_stream: turbo_stream.update(@deliverable.dialog_form_id,
-          partial: "workspace/deliverables/form", locals: { project: @project, feature: @feature, deliverable: @deliverable }),
+          partial: "workspace/deliverables/form", locals: { project: @project, feature: @feature, deliverable: @deliverable, features: @features }),
           status: :unprocessable_entity
       end
     end
@@ -64,7 +67,7 @@ module Workspace
     private
 
     def deliverable_params
-      params.require(:deliverable).permit(:name, :description, :milestone_id)
+      params.require(:deliverable).permit(:name, :description, :milestone_id, :feature_id)
     end
 
     def filter_params

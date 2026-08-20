@@ -1,9 +1,29 @@
-<%= form_with model: work_item, url: work_item.persisted? ? workspace_project_feature_deliverable_work_item_path(project, feature, deliverable, work_item) : workspace_project_feature_deliverable_work_items_path(project, feature, deliverable), scope: :work_item, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+<% form_url = if work_item.persisted?
+  workspace_project_feature_deliverable_work_item_path(project, feature, deliverable, work_item)
+elsif deliverable
+  workspace_project_feature_deliverable_work_items_path(project, feature, deliverable)
+else
+  workspace_project_work_items_path(project)
+end %>
+<%= form_with model: work_item, url: form_url, scope: :work_item, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
   <% if work_item.errors.any? %>
     <div class="text-sm text-destructive space-y-1">
       <% work_item.errors.full_messages.each do |msg| %>
         <p><%= msg %></p>
       <% end %>
+    </div>
+  <% end %>
+
+  <% if local_assigns[:deliverables].present? %>
+    <div>
+      <p class="block font-medium text-foreground mb-1">Deliverable</p>
+      <%= render_combobox(
+        deliverables.map { |d| { value: d.id, name: "#{d.feature.name} / #{d.name}", selected: d.id == work_item.deliverable_id } },
+        name: "work_item[deliverable_id]",
+        selected_value: work_item.deliverable_id,
+        selected_label: work_item.deliverable && "#{work_item.deliverable.feature.name} / #{work_item.deliverable.name}",
+        placeholder: "Select a deliverable"
+      ) %>
     </div>
   <% end %>
 

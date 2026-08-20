@@ -54,7 +54,7 @@
 
         <nav class="flex-1 py-4 px-1 space-y-4 overflow-y-auto">
           <% visible_nav_sections.each do |group| %>
-            <%= tag.div class: "group", data: (group[:section] ? { controller: "ui--collapsible" } : {}) do %>
+            <%= tag.div class: "group", data: (group[:section] ? { controller: "ui--collapsible", "ui--collapsible-key-value": group[:section] } : {}) do %>
               <% if group[:section] %>
                 <button type="button" data-action="click->ui--collapsible#toggle" class="w-full flex items-center gap-1 px-3 mb-1 cursor-pointer">
                   <%= lucide_icon "chevron-down", class: "w-3.5 h-3.5 text-muted-foreground transition-transform duration-200 group-has-[[data-ui--collapsible-target].hidden]:-rotate-90" %>
@@ -79,6 +79,17 @@
             <% end %>
           <% end %>
         </nav>
+
+        <script>
+          document.querySelectorAll("[data-ui--collapsible-key-value]").forEach(function (group) {
+            var key = group.getAttribute("data-ui--collapsible-key-value");
+            if (localStorage.getItem("sidebar-collapsed:" + key) === "collapsed") {
+              group.querySelectorAll('[data-ui--collapsible-target="item"]').forEach(function (item) {
+                item.classList.add("hidden");
+              });
+            }
+          });
+        </script>
 
         <div class="p-3 border-t border-border space-y-1">
           <% Configuration.instance.external_links.each do |link| %>
