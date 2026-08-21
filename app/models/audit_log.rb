@@ -48,7 +48,25 @@ class AuditLog < ApplicationRecord
   end
 
   def expected_hash(prev_hash)
-    payload = [ prev_hash, sequence_number, action, auditable_type, auditable_id, user_id, changes_data.to_json, created_at ].join("|")
+    payload = [ prev_hash, sequence_number, action, auditable_type, auditable_id, user_id, canonical_json(changes_data), created_at ].join("|")
     Digest::SHA256.hexdigest(payload)
+  end
+
+  # jsonb does not preserve object key order, so changes_data.to_json can
+  # come back with keys in a different order than when the hash was first
+  # computed. Sort keys recursively so the hash is stable across reloads.
+  def canonical_json(value)
+    JSON.generate(canonicalize(value))
+  end
+
+  def canonicalize(value)
+    case value
+    when Hash
+      value.keys.sort.index_with { |key| canonicalize(value[key]) }
+    when Array
+      value.map { |item| canonicalize(item) }
+    else
+      value
+    end
   end
 end

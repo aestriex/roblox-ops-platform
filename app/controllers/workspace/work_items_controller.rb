@@ -22,9 +22,10 @@ module Workspace
     permission :mark_integrated, desc: "Move work item to Integrated", auto_assign: [ "Manager", "Super Admin" ], guard: false
     permission :mark_published, desc: "Move work item to Published", auto_assign: [ "Super Admin" ], guard: false
 
-    permission :update_description, desc: "Edit work item description inline", auto_assign: [ "Manager", "Super Admin" ]
-    permission :update_due_date, desc: "Edit work item due date inline", auto_assign: [ "Manager", "Super Admin" ]
-    permission :update_assignee, desc: "Edit work item assignee inline", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_description, desc: "Edit work item description", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_due_date, desc: "Edit work item due date", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_assignee, desc: "Edit work item assignee", auto_assign: [ "Manager", "Super Admin" ]
+    permission :update_flag, desc: "Block or unblock work items", auto_assign: [ "Manager", "Super Admin"]
 
     def index
       @work_items = Workspace::WorkItem.joins(deliverable: :feature).where(feature: { project_id: @project.id }).apply_filters(filter_params)
@@ -36,6 +37,7 @@ module Workspace
 
     def show
       @work_item = @project.work_items.find(params[:id])
+      @activity_logs = activity_logs_for(@work_item)
 
       if turbo_frame_request?
         render "show", layout: false
@@ -108,20 +110,36 @@ module Workspace
     def update_description
       @work_item = @project.work_items.find(params[:id])
       @work_item.update(description: params[:description])
+      @activity_logs = activity_logs_for(@work_item)
       render "show", layout: false
     end
 
     def update_due_date
       @work_item = @project.work_items.find(params[:id])
       @work_item.update(due_date: params[:due_date])
+      @activity_logs = activity_logs_for(@work_item)
       render "show", layout: false
     end
 
     def update_assignee
       @work_item = @project.work_items.find(params[:id])
       @work_item.update(assignee_id: params[:assignee_id])
+      @activity_logs = activity_logs_for(@work_item)
       render "show", layout: false
     end
+
+    def update_flag
+      @work_item = @project.work_items.find(params[:id])
+
+      if params[:blocked] == "true"
+        @work_item.update(blocked: true, blocked_reason: block_reason)
+      else
+        @work_item.update(blocked: false, blocked_reason: nil)
+      end
+
+      render "show", layout: false
+    end
+
 
     private
 
@@ -143,6 +161,12 @@ module Workspace
 
     def set_deliverable
       @deliverable = @feature.deliverables.find(params[:deliverable_id])
+    end
+
+    def activity_logs_for(work_item)
+      AuditLog.where(auditable_type: "Workspace::WorkItem", auditable_id: work_item.id)
+        .order(sequence_number: :desc)
+        .includes(:user)
     end
   end
 end

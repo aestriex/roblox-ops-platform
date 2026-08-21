@@ -1,5 +1,17 @@
 <%= turbo_frame_tag "sheet_content_frame" do %>
   <div class="flex flex-col mt-4">
+    <% if @work_item.blocked? %>
+        <div class="flex items-center p-4 m-4 rounded-md bg-muted/40 border border-border">
+            <div class="flex gap-4 items-center grow">
+                <%= lucide_icon "clock-alert", class: "w-6 h-6" %>
+                <div class="flex flex-col">
+                    <p class="text-sm font-semibold ">This work item has been marked as blocked</p>
+                    <p class="text-sm text-muted-foreground"><%= @work_item.blocked_reason.presence || "(No reason provided)" %></p>
+                </div>
+            </div>
+            <%= button_to "Unblock", update_flag_workspace_project_feature_deliverable_work_item_path(@project, @work_item.deliverable.feature, @work_item.deliverable, @work_item), method: :patch, params: { blocked: "false" }, form: { data: { turbo_frame: "sheet_content_frame" } }, class: "px-3 py-1.5 rounded-md border border-input text-sm font-medium hover:bg-accent" %>        </div>
+    <% end %>
+
     <div>
       <div class="grid grid-cols-[140px_1fr] gap-4 px-4 py-2.5">
         <p class="text-sm text-muted-foreground">Status</p>
@@ -56,13 +68,6 @@
         </div>
       </div>
 
-      <% if @work_item.blocked? %>
-        <div class="grid grid-cols-[140px_1fr] gap-4 px-4 py-2.5">
-          <p class="text-sm text-muted-foreground">Blocked</p>
-          <p class="text-sm text-destructive"><%= @work_item.blocked_reason %></p>
-        </div>
-      <% end %>
-
       <div class="grid grid-cols-[140px_1fr] gap-4 px-4 py-2.5">
         <p class="text-sm text-muted-foreground">Description</p>
 
@@ -102,7 +107,15 @@
           <% end %>
 
           <%= tab_panel do %>
-            <p class="text-sm text-muted-foreground italic">Activity log coming soon.</p>
+            <div class="space-y-2">
+              <% if @activity_logs.present? %>
+                <% @activity_logs.each do |log| %>
+                  <%= render "workspace/work_items/activity_log_entry", log: log %>
+                <% end %>
+              <% else %>
+                <p class="text-sm text-muted-foreground italic">No activity yet.</p>
+              <% end %>
+            </div>
           <% end %>
         <% end %>
       <% end %>

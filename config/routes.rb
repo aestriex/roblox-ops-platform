@@ -40,6 +40,7 @@ Rails.application.routes.draw do
             patch :update_description, on: :member
             patch :update_due_date, on: :member
             patch :update_assignee, on: :member
+            patch :update_flag, on: :member
           end
         end
       end

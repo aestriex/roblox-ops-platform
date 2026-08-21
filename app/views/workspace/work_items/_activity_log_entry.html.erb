@@ -1,0 +1,12 @@
+<div class="flex items-start gap-3 p-2 border border-border rounded-md text-sm">
+  <%= image_tag log.user&.display_avatar_url || "https://api.dicebear.com/9.x/initials/svg?seed=system",
+        class: "w-8 h-8 rounded-full shrink-0" %>
+
+  <div class="min-w-0">
+    <p class="text-foreground">
+      <span class="font-medium"><%= log.user&.display_name || "System" %></span>
+      <%= activity_log_summary(log) %>
+    </p>
+    <p class="text-xs text-muted-foreground"><%= time_ago_in_words(log.created_at) %> ago</p>
+  </div>
+</div>
