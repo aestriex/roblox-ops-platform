@@ -72,7 +72,7 @@ module Admin
       params.require(:role).permit(:name, :description, permission_ids: [])
     end
 
-    def can_manage_role
+    def can_manage_role!
       target_role = Role.find(params[:id])
       if target_role.rank >= current_user.highest_role.rank
         redirect_to admin_roles_path, alert: "You cannot manage a role equal to or higher than your own."

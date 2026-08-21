@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_17_235521) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_21_070000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -41,6 +41,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_235521) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "audit_logs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "action", null: false
+    t.string "auditable_id", null: false
+    t.string "auditable_type", null: false
+    t.jsonb "changes_data"
+    t.datetime "created_at", null: false
+    t.string "entry_hash", null: false
+    t.string "previous_entry_hash"
+    t.bigint "sequence_number", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id"
+    t.index ["auditable_type", "auditable_id"], name: "index_audit_logs_on_auditable_type_and_auditable_id"
+    t.index ["sequence_number"], name: "index_audit_logs_on_sequence_number", unique: true
+    t.index ["user_id"], name: "index_audit_logs_on_user_id"
   end
 
   create_table "configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -234,6 +250,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_17_235521) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "audit_logs", "users"
   add_foreign_key "hiring_answers", "hiring_posting_applications", column: "posting_application_id"
   add_foreign_key "hiring_answers", "hiring_questions", column: "question_id"
   add_foreign_key "hiring_posting_applications", "hiring_job_postings", column: "job_posting_id"
