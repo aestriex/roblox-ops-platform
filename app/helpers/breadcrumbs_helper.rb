@@ -4,15 +4,19 @@ module BreadcrumbsHelper
     crumbs = []
 
     if segments.empty?
-      crumbs << { label: "Dashboard", path: nil }
+      crumbs << { label: "Dashboard", path: nil, icon: "sparkles" }
       return crumbs
     end
 
     path_so_far = ""
-    segments.each do |segment|
+    segments.each_with_index do |segment, index|
       path_so_far += "/#{segment}"
 
-      if segment.match?(/\A[0-9a-f]{8}-[0-9a-f]{4}-/)
+      if index.zero?
+        # The module root (e.g. "workspace", "hiring") has no overview route
+        # of its own, so it isn't a link -- just a labeled icon.
+        crumbs << { label: humanize_segment(segment), path: nil, icon: Configuration::MODULE_ICONS[segment] }
+      elsif segment.match?(/\A[0-9a-f]{8}-[0-9a-f]{4}-/)
         crumbs << { label: resolve_record_label(segments, segment), path: path_so_far }
       else
         crumbs << { label: humanize_segment(segment), path: path_so_far }

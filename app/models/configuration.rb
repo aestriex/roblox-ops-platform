@@ -5,6 +5,15 @@ class Configuration < ApplicationRecord
     "personnel" => "Personnel"
   }.freeze
 
+  # Lucide icon name shown next to each module's name, e.g. in breadcrumbs.
+  # Includes "admin", which isn't in MODULES since it can't be disabled.
+  MODULE_ICONS = {
+    "hiring" => "briefcase",
+    "workspace" => "wrench",
+    "personnel" => "users",
+    "admin" => "shield"
+  }.freeze
+
   def self.instance
     first_or_create!(org_name: "Studio Proviso")
   end

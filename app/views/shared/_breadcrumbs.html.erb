@@ -4,10 +4,17 @@
       <%= lucide_icon "chevron-right", class: "w-4 h-4" %>
     <% end %>
 
-    <% if crumb[:path] %>
+    <% if index.zero? %>
+      <span class="inline-flex items-center gap-1.5 text-muted-foreground font-normal select-none">
+        <% if crumb[:icon] %>
+          <%= lucide_icon crumb[:icon], class: "w-4 h-4" %>
+        <% end %>
+        <%= crumb[:label] %>
+      </span>
+    <% elsif crumb[:path] %>
       <%= link_to crumb[:label], crumb[:path], class: "hover:text-foreground transition" %>
     <% else %>
-      <span class="text-foreground font-medium"><%= crumb[:label] %></span>
+      <span class="text-foreground font-medium select-none"><%= crumb[:label] %></span>
     <% end %>
   <% end %>
 </nav>

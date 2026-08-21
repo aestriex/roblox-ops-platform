@@ -1,5 +1,5 @@
 <div id="work_item_status_<%= work_item.id %>" data-controller="ui--popover" class="w-fit select-none">
-  <div class="popover-trigger" data-ui--popover-target="trigger" data-action="dblclick->ui--popover#toggle">
+  <div class="popover-trigger" data-ui--popover-target="trigger" data-action="click->ui--popover#toggle">
     <span class="group inline-flex items-center gap-1 px-2 py-1 rounded-md border border-transparent hover:border-input cursor-pointer w-fit -ml-2">
       <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-muted text-muted-foreground">
         <%= work_item.status.titleize %>

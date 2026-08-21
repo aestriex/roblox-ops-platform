@@ -11,7 +11,7 @@
         <%= section.title %>
       </h2>
 
-      <%= form_with model: section, url: hiring_job_posting_section_path(job_posting, section), method: :patch, class: "hidden", data: { inline_edit_target: "form", turbo_frame: "_top" } do |form| %>
+      <%= form_with model: section, url: hiring_job_posting_section_path(job_posting, section), method: :patch, class: "!hidden", data: { inline_edit_target: "form", turbo_frame: "_top" } do |form| %>
         <%= form.text_field :title, class: "text-xl font-semibold text-foreground bg-background border border-input rounded px-2 py-0.5", data: { inline_edit_target: "input", action: "keydown->inline-edit#submitOnEnter blur->inline-edit#cancel" } %>
       <% end %>
     </div>

@@ -57,10 +57,22 @@ export default class UIDatePickerController extends Controller {
     if (this.isEditableInput(this.inputTarget)) this.addInputAction();
     this.addToggleAction();
     this.setToggleAriaLabel();
-    this.dateValue = this.validate(this.inputTarget.textContent)
-      ? ""
-      : this.inputTarget.textContent;
+    this.dateValue = this.validate(this.getInputText()) ? "" : this.getInputText();
     this.dateValueChanged(this.dateValue);
+  }
+
+  getInputText() {
+    return this.isEditableInput(this.inputTarget)
+      ? this.inputTarget.value
+      : this.inputTarget.textContent;
+  }
+
+  setInputText(text) {
+    if (this.isEditableInput(this.inputTarget)) {
+      this.inputTarget.value = text;
+    } else {
+      this.inputTarget.textContent = text;
+    }
   }
 
   isEditableInput(element) {
@@ -75,7 +87,7 @@ export default class UIDatePickerController extends Controller {
     if (!this.hasHiddenTarget) return;
     const dispatchChangeEvent = value != this.hiddenTarget.value;
     this.hiddenTarget.value = value;
-    this.inputTarget.textContent = value ? this.format(value) : this.text("chooseDate");
+    this.setInputText(value ? this.format(value) : this.text("chooseDate"));
     // Trigger change event on input when user selects date from picker.
     // http://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/change_event
     if (dispatchChangeEvent) this.inputTarget.dispatchEvent(new Event("change"));

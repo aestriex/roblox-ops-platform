@@ -9,10 +9,18 @@ export default class extends Controller {
     const label = item.textContent.trim()
 
     this.inputTarget.value = value
-    this.labelTarget.textContent = label
+    if ("value" in this.labelTarget) {
+      this.labelTarget.value = label
+    } else {
+      this.labelTarget.textContent = label
+    }
 
     const popoverContent = this.element.querySelector('[data-ui--popover-target="content"]')
-    popoverContent.classList.add("hidden")
-    popoverContent.dataset.state = "closed"
+    if (popoverContent) {
+      popoverContent.classList.add("hidden")
+      popoverContent.dataset.state = "closed"
+    }
+
+    this.dispatch("select", { detail: { value, label } })
   }
 }

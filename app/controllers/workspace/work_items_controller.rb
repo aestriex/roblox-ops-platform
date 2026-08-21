@@ -25,7 +25,7 @@ module Workspace
     permission :update_description, desc: "Edit work item description", auto_assign: [ "Manager", "Super Admin" ]
     permission :update_due_date, desc: "Edit work item due date", auto_assign: [ "Manager", "Super Admin" ]
     permission :update_assignee, desc: "Edit work item assignee", auto_assign: [ "Manager", "Super Admin" ]
-    permission :update_flag, desc: "Block or unblock work items", auto_assign: [ "Manager", "Super Admin"]
+    permission :update_flag, desc: "Block or unblock work items", auto_assign: [ "Manager", "Super Admin" ]
 
     def index
       @work_items = Workspace::WorkItem.joins(deliverable: :feature).where(feature: { project_id: @project.id }).apply_filters(filter_params)
