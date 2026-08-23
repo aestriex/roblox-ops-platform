@@ -99,6 +99,12 @@
               <%= lucide_icon "external-link", class: "w-4 h-4 shrink-0" %>
             <% end %>
           <% end %>
+
+          <div class="px-3 text-xs text-muted-foreground flex gap-2 items-center justify-center">
+            <span>v<%= RobloxOpsPlatform::VERSION %></span>
+            <span>·</span>
+            <%= link_to "Report a bug", "https://github.com/aestriex/roblox-ops-platform/issues/new", target: "_blank", rel: "noopener", class: "hover:text-foreground underline" %>
+          </div>
         </div>
       </aside>
 
