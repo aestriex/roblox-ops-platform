@@ -60,6 +60,8 @@ module BreadcrumbsHelper
     case segment
     when "posting_applications"
       "Submissions"
+    when "workbench"
+      "My Work"
     else
       segment.titleize
     end

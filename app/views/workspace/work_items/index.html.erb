@@ -74,7 +74,7 @@
     </div>
 
     <div data-ui--view-toggle-target="kanban" class="hidden">
-      <%= render "workspace/work_items/kanban", project: @project, work_items: @work_items %>
+      <%= render "shared/kanban", items: @work_items, statuses: Workspace::WorkItem::STATUSES, card_partial: "workspace/work_items/kanban_card" %>
     </div>
   </div>
 <% end %>

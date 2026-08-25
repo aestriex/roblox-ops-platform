@@ -1,5 +1,13 @@
 <div class="mx-auto space-y-6">
-  <h1 class="text-2xl font-bold text-foreground">Organization Configuration</h1>
+  <h1 class="text-2xl font-bold text-foreground">Configuration Settings</h1>
+
+  <div class="flex items-center border border-destructive bg-destructive/20 rounded-md gap-4 p-4">
+      <%= lucide_icon "triangle-alert" %>
+      <div class="flex flex-col">
+          <b class="text-sm">Notice</b>
+          <p class="text-sm text-destructive-foreground">You are editing system configuration settings. These settings affect all users across the entire app. <b>Proceed with caution!</b></p>
+      </div>
+  </div>
 
   <%= form_with model: @configuration, url: admin_configurations_path, method: :patch, class: "space-y-6" do |form| %>
     <div>

@@ -45,6 +45,8 @@ Rails.application.routes.draw do
         end
       end
     end
+
+    get "workbench", to: "workbench#index", as: :workbench
   end
 
   root "pages#dashboard"

@@ -1,0 +1,67 @@
+<div class="space-y-4" data-controller="ui--view-toggle">
+  <div class="flex items-center justify-between gap-2 flex-wrap">
+    <div data-controller="ui--popover" class="w-fit select-none">
+      <div class="popover-trigger" data-ui--popover-target="trigger" data-action="click->ui--popover#toggle">
+        <%= render_button variant: :outline do %>
+          <%= lucide_icon "list-filter", class: "w-4 h-4 mr-2" %>
+          <%= @projects_for_filter.find { |project| project.id.to_s == params[:project_id] }&.name || "All Projects" %>
+        <% end %>
+      </div>
+
+      <div class="popover-wrapper select-none" data-ui--popover-target="wrapper">
+        <div data-side="bottom" data-controller="ui--transition" data-ui--popover-target="content" data-state="closed" role="dialog" class="hidden z-50 rounded-md bg-background border border-border bg-popover p-1 text-popover-foreground shadow-md outline-none w-56" tabindex="-1">
+          <%= link_to "All Projects", workspace_workbench_path, class: "block px-2 py-1.5 text-sm rounded-sm hover:bg-accent #{"font-medium" if params[:project_id].blank?}" %>
+          <% @projects_for_filter.each do |project| %>
+            <%= link_to project.name, workspace_workbench_path(project_id: project.id), class: "block px-2 py-1.5 text-sm rounded-sm hover:bg-accent #{"font-medium" if params[:project_id] == project.id.to_s}" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-1 border border-border rounded-md p-0.5">
+      <button type="button" data-action="click->ui--view-toggle#showTable" data-ui--view-toggle-target="tableIcon" class="p-1.5 rounded-sm bg-accent">
+        <%= lucide_icon "table", class: "w-4 h-4" %>
+      </button>
+      <button type="button" data-action="click->ui--view-toggle#showKanban" data-ui--view-toggle-target="kanbanIcon" class="p-1.5 rounded-sm">
+        <%= lucide_icon "columns-3", class: "w-4 h-4" %>
+      </button>
+    </div>
+  </div>
+
+  <% if current_user.personnel_person.nil? %>
+    <div class="text-center py-24 text-muted-foreground">
+      <%= lucide_icon "user-x", class: "w-8 h-8 mx-auto mb-3" %>
+      <p>You don't have a Personnel record linked to your account, so no work can be assigned to you yet.</p>
+    </div>
+  <% else %>
+    <div data-ui--view-toggle-target="table">
+      <%= render_table do %>
+        <%= table_head do %>
+          <%= table_header "Title" %>
+          <%= table_header "Project" %>
+          <%= table_header "Deliverable" %>
+          <%= table_header "Status" %>
+          <%= table_header "Due Date" %>
+        <% end %>
+
+        <%= table_body do %>
+          <% @work_items.each do |work_item| %>
+            <%= table_row do %>
+              <%= table_column work_item.title %>
+              <%= table_column work_item.deliverable.feature.project.name %>
+              <%= table_column work_item.deliverable.name %>
+              <%= table_column do %>
+                <span class="px-2 py-1 rounded-full text-xs font-medium bg-muted text-muted-foreground"><%= work_item.status.titleize %></span>
+              <% end %>
+              <%= table_column work_item.due_date&.strftime("%b %-d, %Y") || "—" %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div data-ui--view-toggle-target="kanban" class="hidden">
+      <%= render "shared/kanban", items: @work_items, statuses: Workspace::WorkItem::STATUSES, card_partial: "workspace/workbench/kanban_card" %>
+    </div>
+  <% end %>
+</div>

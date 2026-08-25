@@ -1,0 +1,20 @@
+<%
+  status_for = local_assigns.fetch(:status_for) { ->(item) { item.status } }
+  column_label = local_assigns.fetch(:column_label) { ->(status) { status.titleize } }
+%>
+<div data-controller="ui--kanban" class="grid grid-flow-col auto-cols-[280px] gap-4 overflow-x-auto pb-4">
+  <% statuses.each do |status| %>
+    <% column_items = items.select { |item| status_for.call(item) == status } %>
+    <div class="flex flex-col gap-2 bg-muted/40 rounded-lg p-2">
+      <p class="text-xs font-semibold text-muted-foreground uppercase px-2 py-1">
+        <%= column_label.call(status) %> (<span data-ui--kanban-target="count" data-status="<%= status %>"><%= column_items.size %></span>)
+      </p>
+
+      <div class="flex flex-col gap-2 min-h-[200px]" data-ui--kanban-target="column" data-status="<%= status %>">
+        <% column_items.each do |item| %>
+          <%= render partial: card_partial, locals: { item: item } %>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
