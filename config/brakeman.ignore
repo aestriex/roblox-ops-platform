@@ -1,0 +1,28 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "404b84ac5e418ac3f48f6952a2bd344ddf7c520978b1f58e00bc08564a112903",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/personnel/contract_parties_controller.rb",
+      "line": 41,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:contract_party).permit(:entity_selector, :custom_party_name, :role)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Personnel::ContractPartiesController",
+        "method": "contract_party_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "The role attribute is a free-text field describing a contract party role (e.g. Vendor, Employee), not an authorization role. It only sets ContractParty#role, unrelated to the Role/permissions model."
+    }
+  ],
+  "brakeman_version": "8.0.6"
+}
