@@ -1,0 +1,40 @@
+<%= form_with model: contract_party, url: personnel_contract_contract_parties_path(contract), scope: :contract_party, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if contract_party.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% contract_party.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div data-party-picker-target="personWrapper" class="<%= "hidden" if contract_party.custom_party_name.present? %>">
+    <%= form.label :entity_selector, "Link to a person", class: "block font-medium text-foreground mb-1" %>
+    <%= render_combobox(
+          Personnel::Person.order(:first_name).map { |person| { value: "Personnel::Person|#{person.id}", name: person.full_name, avatar: person.user&.display_avatar_url, selected: "Personnel::Person|#{person.id}" == contract_party.entity_selector } },
+          name: "contract_party[entity_selector]",
+          selected_value: contract_party.entity_selector,
+          selected_label: contract_party.entity&.full_name,
+          placeholder: "Search people..."
+        ) %>
+
+    <button type="button" data-action="click->party-picker#showCustomName" class="text-sm text-muted-foreground hover:underline cursor-pointer mt-1">
+      Use a custom party name instead
+    </button>
+  </div>
+
+  <div data-party-picker-target="customNameWrapper" class="<%= "hidden" unless contract_party.custom_party_name.present? %>">
+    <%= form.label :custom_party_name, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_field :custom_party_name, class: "w-full border border-input rounded-md px-4 py-2 bg-background", placeholder: "Acme Corp", data: { party_picker_target: "customNameInput" } %>
+
+    <button type="button" data-action="click->party-picker#showPersonPicker" class="text-sm text-muted-foreground hover:underline cursor-pointer mt-1">
+      Use a person instead
+    </button>
+  </div>
+
+  <div>
+    <%= form.label :role, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_field :role, class: "w-full border border-input rounded-md px-4 py-2 bg-background", data: { party_picker_target: "roleInput" } %>
+  </div>
+
+  <%= render_button "Add Party", type: :submit %>
+<% end %>

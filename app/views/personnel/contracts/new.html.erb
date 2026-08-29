@@ -1,0 +1,7 @@
+<%= turbo_frame_tag "sheet_content_frame" do %>
+  <div class="p-4">
+    <%= turbo_frame_tag @contract.dialog_form_id do %>
+      <%= render "personnel/contracts/form", contract: @contract %>
+    <% end %>
+  </div>
+<% end %>

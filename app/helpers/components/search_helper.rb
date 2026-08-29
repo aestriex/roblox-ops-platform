@@ -5,6 +5,7 @@ module Components::SearchHelper
 
   def render_search(items, **options, &block)
     options[:pattern] ||= "^{input}"
+    options[:searchable] = true unless options.key?(:searchable)
     content_for :search_icon, "", flush: true
     content = capture(&block) if block
     input_class = content_for?(:search_icon) ? "pl-1" : ""

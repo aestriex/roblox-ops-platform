@@ -9,8 +9,8 @@
       </button>
     <% end %>
 
-    <% popover_content class: "w-full p-0" do %>
-      <%= render_search items %>
+    <% popover_content class: "w-full p-0", side: "bottom-start" do %>
+      <%= render_search items, searchable: searchable %>
     <% end %>
   <% end %>
 </div>

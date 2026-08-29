@@ -51,6 +51,8 @@ module BreadcrumbsHelper
         Workspace::Deliverable.find_by(id: uuid)&.name
     when "work_items"
         Workspace::WorkItem.find_by(id: uuid)&.title
+    when "contracts"
+        Personnel::Contract.find_by(id: uuid)&.name
     else
         uuid
     end

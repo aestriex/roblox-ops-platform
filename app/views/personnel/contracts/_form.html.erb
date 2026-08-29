@@ -1,0 +1,113 @@
+<%= form_with model: contract, url: contract.persisted? ? personnel_contract_path(contract) : personnel_contracts_path, scope: :contract, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if contract.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% contract.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+      <%= form.label :name, class: "block font-medium text-foreground mb-1" %>
+      <%= form.text_field :name, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <div>
+    <%= form.label :description, class: "block font-medium text-foreground mb-1" %>
+    <%= form.text_area :description, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+  </div>
+
+  <% if contract.persisted? %>
+    <div>
+      <%= form.label :status, class: "block font-medium text-foreground mb-1" %>
+      <%= render_combobox(
+            Personnel::Contract::STATUSES.map { |status| { value: status, name: status.titleize, selected: status == contract.status } },
+            name: "contract[status]",
+            selected_value: contract.status,
+            selected_label: contract.status&.titleize,
+            placeholder: "Select status"
+          ) %>
+    </div>
+  <% else %>
+    <div class="flex items-start gap-3 p-4 border border-border rounded-lg bg-muted/50">
+      <%= lucide_icon "info", class: "w-4 h-4 text-muted-foreground mt-0.5 shrink-0" %>
+      <p class="text-sm text-muted-foreground">
+        New contracts start as <span class="font-medium text-foreground">Draft</span>. Once created, you can attach a PDF version and change status from the contract page.
+      </p>
+    </div>
+  <% end %>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <%= form.label :start_date, class: "block font-medium text-foreground mb-1" %>
+      <%= form.date_field :start_date, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+    <div>
+      <%= form.label :end_date, class: "block font-medium text-foreground mb-1" %>
+      <%= form.date_field :end_date, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
+    </div>
+  </div>
+
+  <div data-controller="party-picker" data-action="ui--combobox:select->party-picker#personSelected ui--dialog:opened->party-picker#resetPopup">
+    <%= form.label :contract_parties, "Parties", class: "block font-medium text-foreground mb-1" %>
+
+    <div class="space-y-2 mb-2" data-party-picker-target="list">
+      <%= form.fields_for :contract_parties do |party_form| %>
+        <%= render "personnel/contracts/party_chip_fields", form: party_form %>
+      <% end %>
+    </div>
+
+    <template data-party-picker-target="fieldsTemplate">
+      <%= form.fields_for :contract_parties, Personnel::ContractParty.new, child_index: "NEW_RECORD" do |party_form| %>
+        <%= render "personnel/contracts/party_chip_fields", form: party_form %>
+      <% end %>
+    </template>
+
+    <%= render_dialog do %>
+      <%= dialog_trigger do %>
+        <%= render_button variant: :ghost, class: "w-full justify-center border border-dashed border-border" do %>
+          <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Party
+        <% end %>
+      <% end %>
+
+      <%= dialog_content do %>
+        <h2 class="text-lg font-semibold text-foreground mb-6">Add Party</h2>
+
+        <div class="space-y-4">
+          <p data-party-picker-target="error" class="hidden text-sm text-destructive"></p>
+
+          <div data-party-picker-target="personWrapper">
+            <label class="block font-medium text-foreground mb-1">Link to a person</label>
+            <%= render_combobox(
+                  Personnel::Person.order(:first_name).map { |person| { value: "Personnel::Person|#{person.id}", name: person.full_name, avatar: person.user&.display_avatar_url } },
+                  name: "_party_picker_scratch_entity",
+                  placeholder: "Search people..."
+                ) %>
+
+            <button type="button" data-action="click->party-picker#showCustomName" class="text-sm text-muted-foreground hover:underline cursor-pointer mt-1">
+              + Use a custom party name instead
+            </button>
+          </div>
+
+          <div data-party-picker-target="customNameWrapper" class="hidden">
+            <label class="block font-medium text-foreground mb-1">Custom party name</label>
+            <input type="text" data-party-picker-target="customNameInput" class="w-full border border-input rounded-md px-4 py-2 bg-background" placeholder="e.g. Acme Corp">
+
+            <button type="button" data-action="click->party-picker#showPersonPicker" class="text-sm text-muted-foreground hover:underline cursor-pointer mt-1">
+              ← Use a person instead
+            </button>
+          </div>
+
+          <div>
+            <label class="block font-medium text-foreground mb-1">Role</label>
+            <input type="text" data-party-picker-target="roleInput" class="w-full border border-input rounded-md px-4 py-2 bg-background">
+          </div>
+
+          <%= render_button "Add Party", data: { action: "click->party-picker#confirm" } %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <%= render_button contract.persisted? ? "Save Changes" : "Create Contract", type: :submit %>
+<% end %>

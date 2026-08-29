@@ -1,0 +1,54 @@
+<div class="mx-auto space-y-8">
+  <div class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold text-foreground">Contracts</h1>
+
+    <%= render_sheet(id: "contract_sheet", direction: "right", width: "w-1/2") %>
+
+    <%= render_button variant: :outline, data: {
+          controller: "ui--sheet-trigger",
+          "ui--sheet-trigger-outlet-value": "#contract_sheet",
+          "ui--sheet-trigger-url-value": new_personnel_contract_path,
+          "ui--sheet-trigger-title-value": "New Contract",
+          action: "click->ui--sheet-trigger#open"
+        } do %>
+      <%= lucide_icon "plus", class: "w-4 h-4 mr-2" %> Add Contract
+    <% end %>
+  </div>
+
+  <div data-controller="ui--search" data-ui--search-pattern-value="{input}">
+    <div class="flex items-center gap-2 flex-wrap mb-4">
+      <%= render_filter_bar(Personnel::Contract, context: nil, current_params: params.permit(:status).to_h) %>
+
+      <div class="relative">
+        <%= lucide_icon "search", class: "w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" %>
+        <%= render_input name: "search", placeholder: "Search contracts or parties...", class: "max-w-xs pl-9", data: { "ui--search-target": "source", action: "input->ui--search#search" } %>
+      </div>
+    </div>
+
+    <%= render_table do %>
+      <%= table_head do %>
+        <%= table_header "Name" %>
+        <%= table_header "Status" %>
+        <%= table_header "Parties" %>
+        <%= table_header "Start Date" %>
+        <%= table_header "End Date" %>
+      <% end %>
+
+      <%= table_body do %>
+        <% @contracts.each do |contract| %>
+          <%= table_row class: "relative", data: { "ui--search-target": "item" } do %>
+            <%= table_column do %>
+              <%= link_to contract.name, personnel_contract_path(contract), class: "after:absolute after:inset-0" %>
+            <% end %>
+            <%= table_column do %>
+              <span class="px-2 py-1 rounded-full text-xs font-medium <%= contract.status_badge_classes %>"><%= contract.status.titleize %></span>
+            <% end %>
+            <%= table_column contract.contract_parties.map(&:party_name).join(", ").presence || "—" %>
+            <%= table_column contract.start_date&.strftime("%b %-d, %Y") || "—" %>
+            <%= table_column contract.end_date&.strftime("%b %-d, %Y") || "—" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  </div>
+</div>

@@ -33,6 +33,18 @@
     </div>
 
     <div class="space-y-4">
+      <p class="font-medium text-foreground">Contracts</p>
+
+      <%= hidden_field_tag "configuration[allow_contract_deletion_anytime]", "0" %>
+      <%= render_checkbox(
+        label: "Allow contract deletion at any time",
+        name: "configuration[allow_contract_deletion_anytime]",
+        checked: @configuration.allow_contract_deletion_anytime?
+      ) %>
+      <p class="text-sm text-muted-foreground -mt-2">When disabled, a contract can only be deleted once its status is "Terminated".</p>
+    </div>
+
+    <div class="space-y-4">
       <p class="font-medium text-foreground">External Links</p>
       <p class="text-sm text-muted-foreground -mt-2">Add up to 3 links to show at the bottom of the sidebar (e.g. Discord, Roblox Group).</p>
 

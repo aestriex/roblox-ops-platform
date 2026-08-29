@@ -1,0 +1,41 @@
+<%= form_with model: contract_version, url: personnel_contract_contract_versions_path(contract), scope: :contract_version, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+  <% if contract_version.errors.any? %>
+    <div class="text-sm text-destructive space-y-1">
+      <% contract_version.errors.full_messages.each do |msg| %>
+        <p><%= msg %></p>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :status, class: "block font-medium text-foreground mb-1" %>
+    <%= render_combobox(
+          Personnel::ContractVersion::STATUSES.map { |status| { value: status, name: status.titleize, selected: status == contract_version.status } },
+          name: "contract_version[status]",
+          selected_value: contract_version.status,
+          selected_label: contract_version.status&.titleize,
+          placeholder: "Select status"
+        ) %>
+  </div>
+
+  <div>
+    <%= form.label :file, "PDF File", class: "block font-medium text-foreground mb-1" %>
+
+    <div data-controller="file-upload">
+      <div
+        data-file-upload-target="dropzone"
+        data-action="click->file-upload#open"
+        class="flex items-center justify-center gap-2 px-6 py-8 border border-dashed border-input rounded-md text-sm text-muted-foreground w-full cursor-pointer transition-colors duration-150 hover:border-primary/50"
+      >
+        <%= lucide_icon "paperclip", class: "w-4 h-4" %>
+        <span data-file-upload-target="label">
+          Click to upload or drag and drop
+        </span>
+      </div>
+
+      <%= form.file_field :file, class: "hidden", data: { file_upload_target: "input", action: "file-upload#change" } %>
+    </div>
+  </div>
+
+  <%= render_button "Add Version", type: :submit %>
+<% end %>

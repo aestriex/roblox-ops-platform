@@ -6,7 +6,7 @@
           id: unique_id,
           class: "hidden",
           autocomplete: "off",
-          data: { "ui--checkbox-target": "input" } %>
+          data: { "ui--checkbox-target": "input", action: "change->ui--checkbox#sync" } %>
 
     <button
       type="button"
@@ -22,6 +22,6 @@
         </svg>
       </span>
     </button>
-    <%= render_label name: name, label: label, for: unique_id, data: {action: "click->ui--checkbox#toggle"} %>
+    <%= render_label name: name, label: label, for: unique_id %>
   </div>
 </div>

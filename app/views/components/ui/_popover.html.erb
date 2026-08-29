@@ -5,7 +5,7 @@
 
   <div class="popover-wrapper relative" data-ui--popover-target="wrapper">
     <div
-      date-side="bottom"
+      data-side="<%= content_for(:popover_content_side).presence || "bottom" %>"
       data-controller="ui--transition"
       data-ui--popover-target="content"
       data-align="center"

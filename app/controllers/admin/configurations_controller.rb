@@ -22,7 +22,7 @@ module Admin
     private
 
     def configuration_params
-      permitted = params.require(:configuration).permit(:org_name, external_links: [ :label, :url, :icon ], enabled_modules: [])
+      permitted = params.require(:configuration).permit(:org_name, :allow_contract_deletion_anytime, external_links: [ :label, :url, :icon ], enabled_modules: [])
       permitted[:external_links] = permitted[:external_links]&.reject { |link| link[:url].blank? }
 
       enabled = (permitted.delete(:enabled_modules) || []).reject(&:blank?)

@@ -11,7 +11,8 @@ module NavigationHelper
       { label: "My Work", path: :workspace_workbench_path, icon: "code-xml", permission: "workspace.workbench.index" }
     ] },
     { section: "Personnel", module: "personnel", items: [
-      { label: "People", path: :personnel_people_path, icon: "users", permission: "personnel.people.index" }
+      { label: "People", path: :personnel_people_path, icon: "users", permission: "personnel.people.index" },
+      { label: "Contracts", path: :personnel_contracts_path, icon: "scroll-text", permission: "personnel.contracts.index" }
     ] },
     { section: "Admin", items: [
       { label: "Role Management", path: :admin_roles_path, icon: "key", permission: "admin.roles.index", managerial: true },

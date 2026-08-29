@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_21_070000) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_27_214704) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -60,6 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_070000) do
   end
 
   create_table "configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "allow_contract_deletion_anytime", default: false, null: false
     t.datetime "created_at", null: false
     t.jsonb "disabled_modules", default: [], null: false
     t.jsonb "external_links"
@@ -126,6 +127,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_070000) do
     t.datetime "created_at", null: false
     t.string "description"
     t.string "key"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "personnel_contract_parties", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "contract_id", null: false
+    t.datetime "created_at", null: false
+    t.string "custom_party_name"
+    t.uuid "entity_id"
+    t.string "entity_type"
+    t.string "role"
+    t.datetime "updated_at", null: false
+    t.index ["contract_id"], name: "index_personnel_contract_parties_on_contract_id"
+    t.index ["entity_type", "entity_id"], name: "index_personnel_contract_parties_on_entity"
+  end
+
+  create_table "personnel_contract_versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "contract_id", null: false
+    t.datetime "created_at", null: false
+    t.string "status", null: false
+    t.datetime "updated_at", null: false
+    t.uuid "uploaded_by_id"
+    t.integer "version_number", null: false
+    t.index ["contract_id", "version_number"], name: "idx_on_contract_id_version_number_534fbe8ec9", unique: true
+    t.index ["contract_id"], name: "index_personnel_contract_versions_on_contract_id"
+    t.index ["uploaded_by_id"], name: "index_personnel_contract_versions_on_uploaded_by_id"
+  end
+
+  create_table "personnel_contracts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.date "end_date"
+    t.string "name"
+    t.date "start_date"
+    t.string "status"
     t.datetime "updated_at", null: false
   end
 
@@ -257,6 +292,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_21_070000) do
   add_foreign_key "hiring_posting_applications", "users"
   add_foreign_key "hiring_questions", "hiring_sections", column: "section_id"
   add_foreign_key "hiring_sections", "hiring_job_postings", column: "job_posting_id"
+  add_foreign_key "personnel_contract_parties", "personnel_contracts", column: "contract_id"
+  add_foreign_key "personnel_contract_versions", "personnel_contracts", column: "contract_id"
+  add_foreign_key "personnel_contract_versions", "users", column: "uploaded_by_id"
   add_foreign_key "personnel_people", "users"
   add_foreign_key "role_permissions", "permissions"
   add_foreign_key "role_permissions", "roles"

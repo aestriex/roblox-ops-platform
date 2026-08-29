@@ -1,0 +1,238 @@
+<div class="grid grid-cols-3 gap-8 items-start">
+  <div class="col-span-1 space-y-6 sticky top-8 self-start z-10 mt-8">
+    <div class="p-4 rounded-lg space-y-3">
+      <div class="flex items-center justify-between">
+        <h1 class="text-3xl font-bold text-foreground">
+          <%= @contract.name %>
+        </h1>
+
+        <span class="px-2 py-1 rounded-full text-xs font-medium <%= @contract.status_badge_classes %>">
+          <%= @contract.status.titleize %>
+        </span>
+      </div>
+
+      <p class="text-sm text-foreground"><%= @contract.description %></p>
+
+      <div class="flex items-center gap-2 text-sm text-muted-foreground">
+        <%= lucide_icon "calendar", class: "w-4 h-4" %>
+        <%= @contract.start_date&.strftime("%b %-d, %Y") %>
+        &nbsp;&ndash;&nbsp;
+        <%= @contract.end_date&.strftime("%b %-d, %Y") || "No end date" %>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-2">
+      <div class="flex-1">
+        <%= render_sheet(id: "edit_contract_sheet", direction: "right", width: "w-1/2") %>
+
+        <%= render_button variant: :outline, class: "w-full", data: {
+              controller: "ui--sheet-trigger",
+              "ui--sheet-trigger-outlet-value": "#edit_contract_sheet",
+              "ui--sheet-trigger-url-value": edit_personnel_contract_path(@contract),
+              "ui--sheet-trigger-title-value": "Edit Contract",
+              action: "click->ui--sheet-trigger#open"
+            } do %>
+          <%= lucide_icon "pencil", class: "w-4 h-4 mr-2" %> Edit Details
+        <% end %>
+      </div>
+
+      <% if @contract.deletable? %>
+        <%= render_alert_dialog do %>
+          <% alert_dialog_trigger do %>
+            <%= render_button variant: :destructive, class: "h-10 w-10 p-0 shrink-0" do %>
+              <%= lucide_icon "trash", class: "w-4 h-4" %>
+            <% end %>
+          <% end %>
+
+          <% alert_dialog_content do %>
+            <h2 class="text-lg font-semibold text-foreground mb-2">Delete this contract?</h2>
+            <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+          <% end %>
+
+          <% alert_dialog_cancel do %>
+            <%= render_button "Cancel", variant: :outline %>
+          <% end %>
+
+          <% alert_dialog_continue do %>
+            <%= button_to "Delete", personnel_contract_path(@contract), method: :delete,
+                  form: { data: { turbo_frame: "_top" } },
+                  class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+
+    <div class="p-4 border border-border rounded-lg space-y-2">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-foreground">Parties</p>
+
+        <div data-controller="party-picker" data-action="ui--combobox:select->party-picker#personSelected ui--dialog:opened->party-picker#resetPopup">
+          <%= render_dialog do %>
+            <%= dialog_trigger do %>
+              <%= render_button variant: :ghost, class: "h-8 w-8 p-0" do %>
+                <%= lucide_icon "plus", class: "w-4 h-4" %>
+              <% end %>
+            <% end %>
+
+            <%= dialog_content do %>
+              <h2 class="text-lg font-semibold text-foreground mb-6">Add Party</h2>
+
+              <%= turbo_frame_tag "new_contract_party_dialog_form" do %>
+                <%= render "personnel/contract_parties/form", contract: @contract, contract_party: Personnel::ContractParty.new %>
+              <% end %>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+
+      <% if @contract.contract_parties.any? %>
+        <div class="space-y-2">
+          <% @contract.contract_parties.each do |party| %>
+            <div class="flex items-center gap-3 p-2 border border-border rounded-lg">
+              <% if party.party_avatar_url %>
+                <%= image_tag party.party_avatar_url, class: "w-9 h-9 rounded-full object-cover shrink-0" %>
+              <% else %>
+                <div class="w-9 h-9 rounded-full bg-muted flex items-center justify-center shrink-0">
+                  <%= lucide_icon "user", class: "w-4 h-4 text-muted-foreground" %>
+                </div>
+              <% end %>
+
+              <div class="flex flex-col min-w-0 flex-1">
+                <p class="text-sm font-medium text-foreground truncate"><%= party.party_name %></p>
+                <p class="text-xs text-muted-foreground truncate"><%= party.role.presence || "—" %></p>
+              </div>
+
+              <% if @contract.contract_parties.size > 1 %>
+                <%= render_alert_dialog do %>
+                  <% alert_dialog_trigger do %>
+                    <button type="button" class="text-muted-foreground hover:text-destructive shrink-0 cursor-pointer">
+                      <%= lucide_icon "x", class: "w-4 h-4" %>
+                    </button>
+                  <% end %>
+
+                  <% alert_dialog_content do %>
+                    <h2 class="text-lg font-semibold text-foreground mb-2">Remove this party?</h2>
+                    <p class="text-sm text-muted-foreground">This action cannot be undone.</p>
+                  <% end %>
+
+                  <% alert_dialog_cancel do %>
+                    <%= render_button "Cancel", variant: :outline %>
+                  <% end %>
+
+                  <% alert_dialog_continue do %>
+                    <%= button_to "Remove", personnel_contract_contract_party_path(@contract, party), method: :delete,
+                          form: { data: { turbo_frame: "_top" } },
+                          class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+                  <% end %>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-muted-foreground">No parties added yet.</p>
+      <% end %>
+    </div>
+
+    <div class="p-4 border border-border rounded-lg space-y-2">
+      <div class="flex items-center justify-between">
+        <p class="text-sm font-medium text-foreground">Versions</p>
+
+        <%= render_dialog do %>
+          <%= dialog_trigger do %>
+            <%= render_button variant: :ghost, class: "h-8 w-8 p-0" do %>
+              <%= lucide_icon "plus", class: "w-4 h-4" %>
+            <% end %>
+          <% end %>
+
+          <%= dialog_content do %>
+            <h2 class="text-lg font-semibold text-foreground mb-6">Add Version</h2>
+
+            <%= turbo_frame_tag "new_contract_version_dialog_form" do %>
+              <%= render "personnel/contract_versions/form", contract: @contract, contract_version: Personnel::ContractVersion.new %>
+            <% end %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if @contract.contract_versions.any? %>
+        <div class="space-y-2">
+          <% @contract.contract_versions.each do |version| %>
+            <div class="flex items-center gap-3 p-2 border border-border rounded-lg">
+              <div class="flex flex-col min-w-0 flex-1">
+                <p class="text-sm font-medium text-foreground truncate">
+                  Version <%= version.version_number %>
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium <%= version.status_badge_classes %> ml-1"><%= version.status.titleize %></span>
+                </p>
+                <p class="text-xs text-muted-foreground truncate">
+                  Uploaded <%= version.created_at.strftime("%b %-d, %Y") %><%= " by #{version.uploaded_by.display_name}" if version.uploaded_by %>
+                </p>
+              </div>
+
+              <%= link_to rails_blob_path(version.file, disposition: "attachment"), class: "text-muted-foreground hover:text-foreground shrink-0" do %>
+                <%= lucide_icon "download", class: "w-4 h-4 mr-2" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-muted-foreground">No versions uploaded yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="col-span-2 relative">
+    <% if @contract.contract_versions.any? %>
+      <div
+        data-controller="pdf-viewer"
+        data-action="ui--combobox:select->pdf-viewer#versionSelected"
+        data-pdf-viewer-url-value="<%= rails_blob_path(@contract.current_version.file) %>"
+        data-pdf-viewer-worker-src-value="<%= asset_path("pdfjs-dist--build--pdf.worker.mjs.js") %>"
+        class="border border-border rounded-lg overflow-hidden bg-muted/30"
+      >
+        <div class="flex items-center justify-between gap-4 p-2 border-b border-border bg-background">
+          <div class="w-56">
+            <%= render_combobox(
+                  @contract.contract_versions.map { |version| { value: rails_blob_path(version.file), name: version.label, selected: version == @contract.current_version } },
+                  name: "_pdf_viewer_version_scratch",
+                  selected_value: rails_blob_path(@contract.current_version.file),
+                  selected_label: @contract.current_version.label,
+                  placeholder: "Select version",
+                  searchable: false
+                ) %>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-muted-foreground min-w-24 text-center" data-pdf-viewer-target="pageIndicator">
+              Loading&hellip;
+            </span>
+
+            <%= render_button variant: :ghost, data: { action: "pdf-viewer#zoomOut" } do %>
+              <%= lucide_icon "zoom-out", class: "w-4 h-4" %>
+            <% end %>
+
+            <%= render_button variant: :ghost, data: { action: "pdf-viewer#zoomIn" } do %>
+              <%= lucide_icon "zoom-in", class: "w-4 h-4" %>
+            <% end %>
+
+            <%= render_button variant: :ghost, data: { action: "pdf-viewer#openInNewTab" } do %>
+              <%= lucide_icon "external-link", class: "w-4 h-4" %>
+            <% end %>
+
+            <%= render_button variant: :ghost, data: { action: "pdf-viewer#download" } do %>
+              <%= lucide_icon "download", class: "w-4 h-4" %>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="overflow-auto p-6 space-y-4" style="max-height: calc(100vh - 12rem);" data-pdf-viewer-target="pages">
+        </div>
+      </div>
+    <% else %>
+      <div class="flex flex-col items-center justify-center gap-2 p-16 border border-dashed border-input rounded-lg text-muted-foreground">
+        <%= lucide_icon "file-text", class: "w-8 h-8" %>
+        <p class="text-sm">No contract versions have been uploaded yet.</p>
+      </div>
+    <% end %>
+  </div>
+</div>

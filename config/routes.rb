@@ -25,6 +25,10 @@ Rails.application.routes.draw do
 
   namespace :personnel do
     resources :people
+    resources :contracts do
+      resources :contract_parties, only: [ :create, :destroy ]
+      resources :contract_versions, only: [ :create ]
+    end
   end
 
   namespace :workspace do

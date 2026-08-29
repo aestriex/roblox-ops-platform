@@ -10,6 +10,7 @@ module Components::PopoverHelper
 
   def popover_content(options = {}, &block)
     content_for :popover_content_class, options[:class], flush: true
+    content_for :popover_content_side, options[:side], flush: true
     content_for :popover_content, capture(&block), flush: true
   end
 end

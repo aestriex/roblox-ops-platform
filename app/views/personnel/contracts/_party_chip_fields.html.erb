@@ -1,0 +1,16 @@
+<div class="flex items-center justify-between gap-2 p-2 border border-border rounded-lg" data-row>
+  <%= form.hidden_field :id %>
+  <%= form.hidden_field :_destroy %>
+  <%= form.hidden_field :entity_selector %>
+  <%= form.hidden_field :custom_party_name %>
+  <%= form.hidden_field :role %>
+
+  <div class="flex flex-col min-w-0">
+    <p class="text-sm font-medium text-foreground truncate" data-row-name><%= form.object.party_name %></p>
+    <p class="text-xs text-muted-foreground truncate" data-row-role><%= form.object.role.presence || "—" %></p>
+  </div>
+
+  <button type="button" data-action="click->party-picker#removeRow" class="text-muted-foreground hover:text-destructive shrink-0 cursor-pointer">
+    <%= lucide_icon "x", class: "w-4 h-4" %>
+  </button>
+</div>
