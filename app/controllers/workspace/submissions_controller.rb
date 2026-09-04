@@ -16,12 +16,10 @@ module Workspace
       @submission.submitted_by_id ||= current_user.personnel_person&.id
 
       if @submission.save
-        redirect_to workspace_project_feature_deliverable_work_item_path(@project, @feature, @deliverable, @work_item), notice: "Submission added successfully."
+        redirect_to workspace_workbench_work_item_path(@work_item), notice: "Submission added successfully."
       else
-        @submissions = @work_item.submissions.includes(:submitted_by).order(created_at: :desc)
-        @people = Personnel::Person.all
         render turbo_stream: turbo_stream.update(@submission.dialog_form_id,
-          partial: "workspace/submissions/form", locals: { project: @project, feature: @feature, deliverable: @deliverable, work_item: @work_item, submission: @submission, people: @people }),
+          partial: "workspace/submissions/form", locals: { project: @project, feature: @feature, deliverable: @deliverable, work_item: @work_item, submission: @submission }),
           status: :unprocessable_entity
       end
     end
@@ -31,13 +29,13 @@ module Workspace
 
       @submission.destroy
 
-      redirect_to workspace_project_feature_deliverable_work_item_path(@project, @feature, @deliverable, @work_item), notice: "Submission deleted successfully."
+      redirect_to workspace_workbench_work_item_path(@work_item), notice: "Submission deleted successfully."
     end
 
     private
 
     def submission_params
-      params.require(:submission).permit(:notes, :submitted_by_id, :package)
+      params.require(:submission).permit(:notes, :package)
     end
 
     def set_project

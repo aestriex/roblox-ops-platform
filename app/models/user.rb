@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_many :user_roles, dependent: :destroy
   has_many :roles, through: :user_roles
   has_many :posting_applications, class_name: "Hiring::PostingApplication", dependent: :destroy
+  has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient, dependent: :destroy
 
   def can?(permission_key)
     roles.joins(:permissions).where(permissions: { key: permission_key }).exists?

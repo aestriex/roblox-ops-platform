@@ -26,7 +26,7 @@
     <% end %>
 
     <% alert_dialog_continue do %>
-      <%= button_to "Delete", workspace_project_feature_deliverable_work_item_submission_path(project, feature, deliverable, work_item, submission), method: :delete, form: { data: { turbo_frame: "_top" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
+      <%= button_to "Delete", workspace_project_feature_deliverable_work_item_submission_path(project, feature, deliverable, work_item, submission), method: :delete, form: { data: { turbo_frame: "sheet_content_frame" } }, class: "px-4 py-2 rounded-md bg-destructive text-destructive-foreground hover:opacity-90 text-sm font-medium" %>
     <% end %>
   <% end %>
 </div>

@@ -1,4 +1,4 @@
-<%= form_with model: submission, url: workspace_project_feature_deliverable_work_item_submissions_path(project, feature, deliverable, work_item), scope: :submission, multipart: true, class: "space-y-4", data: { turbo_frame: "_top" } do |form| %>
+<%= form_with model: submission, url: workspace_project_feature_deliverable_work_item_submissions_path(project, feature, deliverable, work_item), scope: :submission, multipart: true, class: "space-y-4", data: { turbo_frame: "sheet_content_frame" } do |form| %>
   <% if submission.errors.any? %>
     <div class="text-sm text-destructive space-y-1">
       <% submission.errors.full_messages.each do |msg| %>
@@ -13,19 +13,22 @@
   </div>
 
   <div>
-    <%= form.label :package, "Attachment", class: "block font-medium text-foreground mb-1" %>
-    <%= form.file_field :package, class: "w-full border border-input rounded-md px-4 py-2 bg-background" %>
-  </div>
+    <%= form.label :package, "Attachment", class: "block font-md text-foreground mb-1" %>
 
-  <div>
-    <p class="block font-medium text-foreground mb-1">Submitted By</p>
-    <%= render_combobox(
-      people.map { |p| { value: p.id, name: p.full_name, selected: p.id == submission.submitted_by_id } },
-      name: "submission[submitted_by_id]",
-      selected_value: submission.submitted_by_id,
-      selected_label: submission.submitted_by&.full_name,
-      placeholder: "Select who is submitting"
-    ) %>
+    <div data-controller="file-upload">
+      <div
+        data-file-upload-target="dropzone"
+        data-action="click->file-upload#open"
+        class="flex items-center justify-center gap-2 px-6 py-8 border border-dashed border-input rounded-md text-sm text-muted-foreground w-full cursor-pointer transition-colors duration-150 hover:border-primary/50"
+      >
+        <%= lucide_icon "paperclip", class: "w-4 h-4" %>
+        <span data-file-upload-target="label">
+          Click to upload or drag and drop
+        </span>
+      </div>
+
+      <%= form.file_field :package, class: "hidden", data: { file_upload_target: "input", action: "file-upload#change" } %>
+    </div>
   </div>
 
   <%= render_button "Submit", type: :submit %>

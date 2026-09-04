@@ -20,34 +20,53 @@
 <body class="bg-background text-foreground transition-all duration-300 antialiased" data-controller="theme">
   <div class="flex h-screen">
       <aside class="w-64 border-r border-border bg-muted/40 flex flex-col">
-        <div class="h-header border-b border-border relative flex items-center px-1" data-controller="dropdown">
-          <button data-action="click->dropdown#toggle" class="w-full flex items-center gap-2 p-2 rounded-md cursor-pointer group">
-            <%= image_tag current_user.display_avatar_url, class: "w-8 h-8 rounded-sm" %>
-            <div class="flex-1 text-left min-w-0">
-              <p class="text-sm font-medium text-foreground truncate"><%= current_user.display_name %></p>
-              <p class="text-xs text-muted-foreground truncate"><%= current_user.highest_role&.name || "No Role" %></p>
-            </div>
-            <div class="flex flex-col items-center w-4 shrink-0 text-muted-foreground">
-              <%= lucide_icon "chevron-up", class: "w-3.5 h-3.5 -mb-1 transition-transform duration-150 group-hover:-translate-y-0.5" %>
-              <%= lucide_icon "chevron-down", class: "w-3.5 h-3.5 -mt-1 transition-transform duration-150 group-hover:translate-y-0.5" %>
-            </div>
-          </button>
+        <div class="h-header border-b border-border relative flex items-center gap-1 px-1">
+          <div class="flex-1 min-w-0">
+            <%= render_popover do %>
+              <% popover_trigger do %>
+                <button class="w-full flex items-center gap-2 p-2 rounded-md cursor-pointer hover:bg-accent">
+                  <%= image_tag current_user.display_avatar_url, class: "w-8 h-8 rounded-sm" %>
+                  <div class="flex-1 text-left min-w-0">
+                    <p class="text-sm font-medium text-foreground truncate"><%= current_user.display_name %></p>
+                    <p class="text-xs text-muted-foreground truncate"><%= current_user.highest_role&.name || "No Role" %></p>
+                  </div>
+                </button>
+              <% end %>
 
-          <div data-dropdown-target="menu" class="hidden absolute left-1/2 -translate-x-1/2 top-[85%] z-50 mt-1 w-56 bg-popover bg-background border border-border rounded-md shadow-md p-1">
-            <button data-action="click->theme#toggle" class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent text-left cursor-pointer">
-              <%= lucide_icon "sun-moon", class: "w-4 h-4" %> Switch theme
-            </button>
+              <% popover_content class: "w-56 p-1", side: "bottom-start" do %>
+                <button data-action="click->theme#toggle" class="w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm hover:bg-accent text-left cursor-pointer">
+                  <%= lucide_icon "sun-moon", class: "w-4 h-4" %> Switch theme
+                </button>
 
-            <% if current_user.can?("admin.configurations.edit") %>
-              <%= link_to edit_admin_configurations_path, class: "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left hover:bg-accent" do %>
-                <%= lucide_icon "settings", class: "w-4 h-4" %> Configuration
+                <% if current_user.can?("admin.configurations.edit") %>
+                  <%= link_to edit_admin_configurations_path, class: "w-full flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left hover:bg-accent" do %>
+                    <%= lucide_icon "settings", class: "w-4 h-4" %> Configuration
+                  <% end %>
+                <% end %>
+
+                <%= render_separator class: "my-1" %>
+
+                <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-destructive hover:bg-destructive/10 hover:text-destructive-foreground flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
+                  <%= lucide_icon "log-out", class: "w-4 h-4" %> Logout
+                <% end %>
               <% end %>
             <% end %>
+          </div>
 
-            <%= render_separator class: "my-1" %>
+          <div class="shrink-0">
+            <%= render_popover do %>
+              <% popover_trigger do %>
+                <button class="relative p-2 rounded-md hover:bg-accent cursor-pointer">
+                  <%= lucide_icon "bell", class: "w-4 h-4 text-muted-foreground" %>
+                  <% if current_user.notifications.unread.exists? %>
+                    <span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-destructive"></span>
+                  <% end %>
+                </button>
+              <% end %>
 
-            <%= button_to destroy_user_session_path, method: :delete, class: "w-full text-destructive hover:bg-destructive/10 hover:text-destructive-foreground flex items-center gap-2 px-2 py-1.5 text-sm rounded-sm text-left" do %>
-              <%= lucide_icon "log-out", class: "w-4 h-4" %> Logout
+              <% popover_content class: "w-80 p-1", side: "bottom-end" do %>
+                <%= render "notifications/list" %>
+              <% end %>
             <% end %>
           </div>
         </div>

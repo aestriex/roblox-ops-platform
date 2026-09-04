@@ -1,0 +1,30 @@
+<div class="bg-background flex items-center justify-between px-2 py-1.5">
+  <p class="text-sm font-medium text-foreground">Notifications</p>
+
+  <% if current_user.notifications.unread.exists? %>
+    <%= button_to "Mark all read", read_all_notifications_path, method: :patch, class: "text-xs text-muted-foreground hover:text-foreground hover:underline cursor-pointer bg-transparent" %>
+  <% end %>
+</div>
+
+<%= render_separator class: "my-1" %>
+
+<% notifications = current_user.notifications.recent.limit(10) %>
+<% if notifications.any? %>
+  <div class="space-y-0.5 max-h-80 overflow-y-auto">
+    <% notifications.each do |notification| %>
+      <%= button_to read_notification_path(notification), method: :patch,
+            class: "w-full text-left px-2 py-1.5 rounded-sm hover:bg-accent flex items-start gap-2 cursor-pointer #{"bg-accent/40" if notification.unread?}" do %>
+        <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 <%= notification.unread? ? "bg-primary" : "bg-transparent" %>"></span>
+        <span class="flex-1 min-w-0">
+          <span class="block text-sm text-foreground truncate"><%= notification.title %></span>
+          <% if notification.body.present? %>
+            <span class="block text-xs text-muted-foreground truncate"><%= notification.body %></span>
+          <% end %>
+          <span class="block text-xs text-muted-foreground mt-0.5"><%= time_ago_in_words(notification.created_at) %> ago</span>
+        </span>
+      <% end %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="px-2 py-4 text-sm text-muted-foreground text-center">No notifications yet.</p>
+<% end %>

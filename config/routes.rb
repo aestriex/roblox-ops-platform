@@ -3,6 +3,11 @@ Rails.application.routes.draw do
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
+  resources :notifications, only: [] do
+    member { patch :read }
+    collection { patch :read_all }
+  end
+
   namespace :hiring do
     resources :job_postings do
       patch :update_status, on: :member
@@ -51,6 +56,7 @@ Rails.application.routes.draw do
     end
 
     get "workbench", to: "workbench#index", as: :workbench
+    get "workbench/work_items/:id", to: "workbench#work_item", as: :workbench_work_item
   end
 
   root "pages#dashboard"
