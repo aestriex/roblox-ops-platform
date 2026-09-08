@@ -1,12 +1,16 @@
 Rails.application.routes.draw do
+  mount ActionCable.server => "/cable"
+
   get "pages/dashboard"
 
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
 
-  resources :notifications, only: [] do
+  resources :notifications, only: [ :destroy ] do
     member { patch :read }
     collection { patch :read_all }
   end
+
+  resource :notification_preferences, only: [ :update ]
 
   namespace :hiring do
     resources :job_postings do

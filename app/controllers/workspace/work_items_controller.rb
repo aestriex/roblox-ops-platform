@@ -100,6 +100,7 @@ module Workspace
       allowed ||= self_service_statuses.include?(new_status) && @work_item.assignee&.user == current_user
 
       if allowed && @work_item.update(status: new_status)
+        notify_status_change(@work_item, new_status)
         render turbo_stream: turbo_stream.replace("work_item_status_#{@work_item.id}",
           partial: "workspace/work_items/status_field", locals: { work_item: @work_item })
       else
@@ -167,6 +168,18 @@ module Workspace
       AuditLog.where(auditable_type: "Workspace::WorkItem", auditable_id: work_item.id)
         .order(sequence_number: :desc)
         .includes(:user)
+    end
+
+    def notify_status_change(work_item, new_status)
+      recipient = work_item.assignee&.user
+      return if recipient.nil?
+
+      Notification.notify!(
+        recipient: recipient,
+        category: "work_item_status_changed",
+        title: "#{work_item.title} moved to #{new_status.titleize}",
+        notifiable: work_item
+      )
     end
   end
 end

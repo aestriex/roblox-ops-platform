@@ -1,0 +1,21 @@
+<% categories = NotificationCategory.visible_to(current_user) %>
+
+<% if categories.any? %>
+  <%= form_with url: notification_preferences_path, method: :patch, class: "space-y-4" do %>
+    <% categories.each do |category| %>
+      <div>
+        <%= hidden_field_tag "notification_preferences[#{category[:key]}]", "0" %>
+        <%= render_checkbox(
+          label: category[:label],
+          name: "notification_preferences[#{category[:key]}]",
+          checked: current_user.notifications_enabled_for?(category[:key])
+        ) %>
+        <p class="text-sm text-muted-foreground ml-6"><%= category[:description] %></p>
+      </div>
+    <% end %>
+
+    <%= render_button "Save", type: :submit %>
+  <% end %>
+<% else %>
+  <p class="text-sm text-muted-foreground">No notification categories available for your role yet.</p>
+<% end %>

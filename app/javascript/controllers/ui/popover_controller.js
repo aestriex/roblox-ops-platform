@@ -21,6 +21,16 @@ export default class UIPopover extends Controller {
             offset: [0, 8],
           },
         },
+        {
+          // Position with top/left instead of a CSS transform, since a transformed
+          // ancestor becomes the containing block for any `position: fixed` descendant
+          // (e.g. a dialog opened from inside this popover), breaking viewport centering.
+          name: "computeStyles",
+          options: {
+            gpuAcceleration: false,
+            adaptive: false,
+          },
+        },
       ],
     });
   }

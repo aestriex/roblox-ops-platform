@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_04_201433) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_08_215514) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pgcrypto"
@@ -123,8 +123,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_201433) do
     t.index ["job_posting_id"], name: "index_hiring_sections_on_job_posting_id"
   end
 
+  create_table "notification_preferences", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "category", null: false
+    t.datetime "created_at", null: false
+    t.boolean "enabled", default: true, null: false
+    t.datetime "updated_at", null: false
+    t.uuid "user_id", null: false
+    t.index ["user_id", "category"], name: "index_notification_preferences_on_user_id_and_category", unique: true
+    t.index ["user_id"], name: "index_notification_preferences_on_user_id"
+  end
+
   create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.text "body"
+    t.string "category"
     t.datetime "created_at", null: false
     t.uuid "notifiable_id"
     t.string "notifiable_type"
@@ -307,6 +318,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_04_201433) do
   add_foreign_key "hiring_posting_applications", "users"
   add_foreign_key "hiring_questions", "hiring_sections", column: "section_id"
   add_foreign_key "hiring_sections", "hiring_job_postings", column: "job_posting_id"
+  add_foreign_key "notification_preferences", "users"
   add_foreign_key "notifications", "users", column: "recipient_id"
   add_foreign_key "personnel_contract_parties", "personnel_contracts", column: "contract_id"
   add_foreign_key "personnel_contract_versions", "personnel_contracts", column: "contract_id"

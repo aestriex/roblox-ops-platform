@@ -1,0 +1,5 @@
+<span id="notification_mark_all_read">
+  <% if user.notifications.unread.exists? %>
+    <%= button_to "Mark all read", read_all_notifications_path, method: :patch, class: "text-xs text-muted-foreground hover:text-foreground hover:underline cursor-pointer bg-transparent" %>
+  <% end %>
+</span>

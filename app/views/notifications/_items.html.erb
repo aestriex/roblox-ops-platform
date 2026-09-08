@@ -1,0 +1,28 @@
+<div id="notification_list" class="space-y-0.5 max-h-80 overflow-y-auto">
+  <% if notifications.any? %>
+    <% notifications.each do |notification| %>
+      <div class="group w-full flex items-center gap-1 rounded-sm hover:bg-accent <%= "bg-accent/40" if notification.unread? %>">
+        <%= button_to read_notification_path(notification), method: :patch,
+              form_class: "flex-1 min-w-0",
+              class: "w-full text-left px-2 py-1.5 flex items-start gap-2 cursor-pointer bg-transparent" do %>
+          <span class="w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 <%= notification.unread? ? "bg-primary" : "bg-transparent" %>"></span>
+          <span class="flex-1 min-w-0">
+            <span class="block text-sm text-foreground truncate"><%= notification.title %></span>
+            <% if notification.body.present? %>
+              <span class="block text-xs text-muted-foreground truncate"><%= notification.body %></span>
+            <% end %>
+            <span class="block text-xs text-muted-foreground mt-0.5"><%= time_ago_in_words(notification.created_at) %> ago</span>
+          </span>
+        <% end %>
+
+        <%= button_to notification_path(notification), method: :delete,
+              form_class: "shrink-0",
+              class: "p-1.5 mr-1.5 rounded-sm hover:bg-destructive/10 hover:text-destructive text-muted-foreground opacity-0 group-hover:opacity-100 cursor-pointer bg-transparent" do %>
+          <%= lucide_icon "x", class: "w-3.5 h-3.5" %>
+        <% end %>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="px-2 py-4 text-sm text-muted-foreground text-center">No notifications yet.</p>
+  <% end %>
+</div>
